@@ -1,0 +1,29 @@
+1. Manage Student Records
+    A. View Student Details
+        a. Search by Student ID
+        b. Search by Student Name
+    B. Edit Student Details
+        a. Update Personal Details
+        b. Update Course Enrollment
+    C. Delete Student Record
+        Confirm Deletion
+2. Student Registration and Enrollment
+    A. Register New Student
+        a. Enter Personal Details
+        b. Confirm Registration
+    B. Enroll Student in Course
+        a. Select Course
+        b. Confirm Enrollment
+    C. Drop Course
+        a. Select Course
+        b. Confirm Course Drop
+3. Generate Reports
+    A. Generate Student List
+        a. By Course
+        b. By Year
+    B. Generate Course Schedule
+        a. By Student
+        b. By Course
+    C. Generate Academic Performance Report
+        a. By Student
+        b. By Course
