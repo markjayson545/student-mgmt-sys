@@ -2,14 +2,16 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: g++-13 build active file",
-            "command": "/usr/bin/g++-13",
+            "label": "C/C++: g++.exe build active file",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "-l",
+                "sqlite3",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
