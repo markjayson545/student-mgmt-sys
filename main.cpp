@@ -9,89 +9,106 @@ class dBaseAccess{
     
 };
 
-class processing: public dBaseAccess{
+class processing{
     private:
 
         void mgmStdRecords(){
-            char selC;
-            do
+            int sel;
+            bool loop = true;
+            while (loop)
             {
-            cout << "A. " << endl;
-            cout << "B. " << endl;
-            cout << "C. " << endl;
-            cin >> selC;
-            if (selC == 'a' || 'A')
-            {
-                /* code */
+                cout << "1. View Student Details" << endl;
+                cout << "2. Edit Student Details" << endl;
+                cout << "3. Delete Student Record" << endl;
+                cout << "4. Back" << endl;
+                cout << "Selection: ";
+                cin >> sel;
+                switch (sel)
+                {
+                case 1:
+                    /* code */
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+                
+                    break;
+                
+                default:
+                    cout << "Invalid Selection!!!";
+                    break;
+                }
             }
-            else if (selC == 'b' || 'B')
-            {
-                /* code */
-            }
-            else if (selC == 'c' || 'C')
-            {
-                /* code */
-            }
-            else
-            {
-                cout << "Invalid Selection!!!";
-            }
-            } while ("true");
-            
         }
 
         void stdRegNenroll(){
-            char selC;
-            do
+            int sel;
+            bool loop = true;
+            while (loop)
             {
-            cout << "A. " << endl;
-            cout << "B. " << endl;
-            cout << "C. " << endl;
-            cin >> selC;
-            if (selC == 'a' || 'A')
-            {
-                /* code */
+                cout << "1. Register New Student" << endl;
+                cout << "2. Enroll Student in Course" << endl;
+                cout << "3. Drop Course" << endl;
+                cout << "4. Back" << endl;
+                cout << "Selection: ";
+                cin >> sel;
+                switch (sel)
+                {
+                case 1:
+                    /* code */
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+                
+                    break;
+                
+                default:
+                    cout << "Invalid Selection!!!";
+                    break;
+                }
             }
-            else if (selC == 'b' || 'B')
-            {
-                /* code */
-            }
-            else if (selC == 'c' || 'C')
-            {
-                /* code */
-            }
-            else
-            {
-                cout << "Invalid Selection!!!";
-            }
-            } while ("true");
         }
 
         void genReports(){
-            char selC;
-            do
+            int sel;
+            bool loop = true;
+            while(loop)
             {
-            cout << "A. " << endl;
-            cout << "B. " << endl;
-            cout << "C. " << endl;
-            cin >> selC;
-            if (selC == 'a' || 'A')
-            {
-                /* code */
+                cout << "1. Generate Student List" << endl;
+                cout << "2. Generate Course Schedule" << endl;
+                cout << "3. Generate Academic Performance Report" << endl;
+                cout << "4. Back" << endl;
+                cout << "Selection: ";
+                cin >> sel;
+                switch (sel)
+                {
+                case 1:
+                    /* code */
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+                
+                    break;
+                
+                default:
+                    cout << "Invalid Selection!!!";
+                    break;
+                }
             }
-            else if (selC == 'b' || 'B')
-            {
-                /* code */
-            }
-            else if (selC == 'c' || 'C')
-            {
-                /* code */
-            }
-            else
-            {
-                cout << "Invalid Selection!!!";
-            }            
-            } while ("true");
         }
 
     public:
@@ -120,7 +137,7 @@ int main(){
     processing process;
     int sel;
     char selC;
-    do
+    while ("true")
     {
     cout << "Student Management System\n";
     cout << "-----------Menu-----------\n";
@@ -130,7 +147,7 @@ int main(){
     cout << "Selection: ";
     cin >> sel;
     process.getMainUserSelect(sel);
-    } while ("true");
+    }
     
 return 0;
 }
