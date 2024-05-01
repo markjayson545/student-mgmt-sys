@@ -2,6 +2,26 @@
 #include <vector>
 using namespace std;
 
+struct name
+    {
+    string lastName, firstName, middleName;
+    };
+struct dateOfBirth
+    {
+        int month, day, year;
+    }; 
+struct studentInfo
+{
+    name fullName;
+    dateOfBirth birthDate;
+    string address;
+    int phoneNumber;
+    char sex;
+    string email;
+};
+
+vector <studentInfo> studInfo;
+
 class dBaseAccess{
     private:
     
@@ -35,7 +55,7 @@ class processing{
 
                     break;
                 case 4:
-                
+                loop = false;
                     break;
                 
                 default:
@@ -50,6 +70,7 @@ class processing{
             bool loop = true;
             while (loop)
             {
+                studentInfo student;
                 cout << "1. Register New Student" << endl;
                 cout << "2. Enroll Student in Course" << endl;
                 cout << "3. Drop Course" << endl;
@@ -59,7 +80,30 @@ class processing{
                 switch (sel)
                 {
                 case 1:
-                    /* code */
+                    cout << "----Register New Student----\n";
+                    cout << "Enter Last Name: ";
+                    getline(cin, student.fullName.lastName);
+                    cout << "Enter First Name:";
+                    getline(cin, student.fullName.firstName);
+                    cout << "Enter Middle Name:";
+                    getline(cin, student.fullName.middleName);
+                    do
+                    {
+                    cout << "Enter Birthdate:" << endl << "Month (1-12): ";
+                    cin >> student.birthDate.month;
+                    if (student.birthDate.month >= 12 || student.birthDate.month <= 0)
+                    {
+                        cout << "Invalid input!";
+                    }                                       
+                    } while (student.birthDate.month >= 12 || student.birthDate.month <= 0);
+                    
+
+                    cout << "Day: ";
+                    cin >> student.birthDate.day;
+                    cout << "Year: ";
+                    cin >> student.birthDate.year;
+                    studInfo.push_back(student);
+
                     break;
                 case 2:
 
@@ -68,7 +112,7 @@ class processing{
 
                     break;
                 case 4:
-                
+                loop = false;
                     break;
                 
                 default:
@@ -101,7 +145,7 @@ class processing{
 
                     break;
                 case 4:
-                
+                loop = false;
                     break;
                 
                 default:
@@ -139,15 +183,15 @@ int main(){
     char selC;
     while ("true")
     {
-    cout << "Student Management System\n";
-    cout << "-----------Menu-----------\n";
-    cout << " 1. Manage Student Records\n";
-    cout << " 2. Student Registration and Enrollment\n";
-    cout << " 3. Generate Reports\n";
-    cout << "Selection: ";
-    cin >> sel;
-    process.getMainUserSelect(sel);
+        cout << "Student Management System\n";
+        cout << "-----------Menu-----------\n";
+        cout << " 1. Manage Student Records\n";
+        cout << " 2. Student Registration and Enrollment\n";
+        cout << " 3. Generate Reports\n";
+        cout << "Selection: ";
+        cin >> sel;
+        process.getMainUserSelect(sel);
     }
-    
+
 return 0;
 }
