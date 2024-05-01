@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -32,21 +33,58 @@ class dBaseAccess{
 class processing{
     private:
 
-        void mgmStdRecords(){
+        void stdRegNenroll(){
             int sel;
             bool loop = true;
             while (loop)
             {
-                cout << "1. View Student Details" << endl;
-                cout << "2. Edit Student Details" << endl;
-                cout << "3. Delete Student Record" << endl;
+                studentInfo student;
+                cout << "1. Register New Student" << endl;
+                cout << "2. Enroll Student in Course" << endl;
+                cout << "3. Drop Course" << endl;
                 cout << "4. Back" << endl;
                 cout << "Selection: ";
                 cin >> sel;
                 switch (sel)
                 {
                 case 1:
-                    /* code */
+                    cout << "----Register New Student----\n";
+                    cin.ignore(); //ignore the line above
+                    cout << "Enter Last Name: ";
+                    getline(cin, student.fullName.lastName);
+                    cout << "Enter First Name: ";
+                    getline(cin, student.fullName.firstName);
+                    cout << "Enter Middle Name: ";
+                    getline(cin, student.fullName.middleName);
+                        do
+                        {
+                            cout << "Enter Birthdate:" << endl << "Month (1-12): ";
+                            cin >> student.birthDate.month;
+                                if (student.birthDate.month > 12 || student.birthDate.month <= 0)
+                                {
+                                    cout << "Invalid input!";
+                                }                                       
+                        } while (student.birthDate.month > 12 || student.birthDate.month <= 0);
+                        do
+                        {
+                            cout << "Day: ";
+                            cin >> student.birthDate.day;
+                                if (student.birthDate.day > 31 || student.birthDate.day <= 0)
+                                {
+                                    cout << "Invalid input!";
+                                }
+                        } while (student.birthDate.day > 31 || student.birthDate.day <= 0);
+                        do
+                        {
+                            /* code */
+                        } while (student.birthDate.year > 2024 || student.birthDate.year <= 1900);
+                        
+                        
+
+                    cout << "Year: ";
+                    cin >> student.birthDate.year;
+                    studInfo.push_back(student);
+
                     break;
                 case 2:
 
@@ -65,45 +103,21 @@ class processing{
             }
         }
 
-        void stdRegNenroll(){
+        void mgmStdRecords(){
             int sel;
             bool loop = true;
             while (loop)
             {
-                studentInfo student;
-                cout << "1. Register New Student" << endl;
-                cout << "2. Enroll Student in Course" << endl;
-                cout << "3. Drop Course" << endl;
+                cout << "1. View Student Details" << endl;
+                cout << "2. Edit Student Details" << endl;
+                cout << "3. Delete Student Record" << endl;
                 cout << "4. Back" << endl;
                 cout << "Selection: ";
                 cin >> sel;
                 switch (sel)
                 {
                 case 1:
-                    cout << "----Register New Student----\n";
-                    cout << "Enter Last Name: ";
-                    getline(cin, student.fullName.lastName);
-                    cout << "Enter First Name:";
-                    getline(cin, student.fullName.firstName);
-                    cout << "Enter Middle Name:";
-                    getline(cin, student.fullName.middleName);
-                    do
-                    {
-                    cout << "Enter Birthdate:" << endl << "Month (1-12): ";
-                    cin >> student.birthDate.month;
-                    if (student.birthDate.month >= 12 || student.birthDate.month <= 0)
-                    {
-                        cout << "Invalid input!";
-                    }                                       
-                    } while (student.birthDate.month >= 12 || student.birthDate.month <= 0);
-                    
-
-                    cout << "Day: ";
-                    cin >> student.birthDate.day;
-                    cout << "Year: ";
-                    cin >> student.birthDate.year;
-                    studInfo.push_back(student);
-
+                    /* code */
                     break;
                 case 2:
 
@@ -160,10 +174,10 @@ class processing{
             switch (sel)
             {
             case 1:
-                mgmStdRecords();
+                stdRegNenroll();
                 break;
             case 2:
-                stdRegNenroll();
+                mgmStdRecords();
                 break;
             case 3:
                 genReports();
@@ -185,8 +199,8 @@ int main(){
     {
         cout << "Student Management System\n";
         cout << "-----------Menu-----------\n";
-        cout << " 1. Manage Student Records\n";
-        cout << " 2. Student Registration and Enrollment\n";
+        cout << " 1. Student Registration and Enrollment\n";
+        cout << " 2. Manage Student Records\n";
         cout << " 3. Generate Reports\n";
         cout << "Selection: ";
         cin >> sel;
