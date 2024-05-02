@@ -155,8 +155,8 @@ class processing{
                         {
                             cout << "Student ID      :: " << studInfo[i].studentID << endl;
                             cout << "Full Name       :: " << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
-                            cout << "Date of Birth   :: " << studInfo[i].birthDate.month << '/' << studInfo[i].birthDate.day << '/' << studInfo[i].birthDate.year << endl;
                             cout << "Sex             :: " << studInfo[i].sex << endl;
+                            cout << "Date of Birth   :: " << studInfo[i].birthDate.month << '/' << studInfo[i].birthDate.day << '/' << studInfo[i].birthDate.year << endl;
                             cout << "Phone Number    :: " << studInfo[i].phoneNumber << endl;
                             cout << "Email           :: " << studInfo[i].email << endl;
                             cout << "Address         :: " << studInfo[i].address << endl;
@@ -170,6 +170,7 @@ class processing{
                         }
                     break;
                 case 2:
+                while("true"){
                 int findStudID2, selection;
                 bool found2;
                 cout << "Enter Student ID to edit: ";
@@ -180,8 +181,8 @@ class processing{
                         {
                             cout << "~~ Student ID      :: " << studInfo[i].studentID << endl;
                             cout << "1. Full Name       :: " << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
-                            cout << "2. Date of Birth   :: " << studInfo[i].birthDate.month << '/' << studInfo[i].birthDate.day << '/' << studInfo[i].birthDate.year << endl;
-                            cout << "3. Sex             :: " << studInfo[i].sex << endl;
+                            cout << "2. Sex             :: " << studInfo[i].sex << endl;
+                            cout << "3. Date of Birth   :: " << studInfo[i].birthDate.month << '/' << studInfo[i].birthDate.day << '/' << studInfo[i].birthDate.year << endl;
                             cout << "4. Phone Number    :: " << studInfo[i].phoneNumber << endl;
                             cout << "5. Email           :: " << studInfo[i].email << endl;
                             cout << "6. Address         :: " << studInfo[i].address << endl;
@@ -189,83 +190,139 @@ class processing{
                             found2 = true;
                             cout << "Selection: ";
                             cin >> selection;
-                            switch (selection)
-                            {
-                            case 1:
-                            cout << "-----------Change Full Name-----------\n";
-                            cout << "a. Last Name   :: ";
-                            cin.ignore();
-                            getline(cin, studInfo[i].fullName.lastName);
-                            cout << "b. First Name  :: ";
-                            getline(cin, studInfo[i].fullName.firstName);
-                            cout << "c. Middle Name :: ";
-                            getline(cin, studInfo[i].fullName.middleName);
-                            cout << "---Full Name modified successfully---";
-                                break;
-                            case 2:
-                            cout << "-------------Change Birth Date--------\n";
-                        do
-                        {
-                            cout << "Month (1-12)   :: ";
-                            cin >> studInfo[i].birthDate.month;
-                                if (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0)
+                                switch (selection)
                                 {
-                                    cout << "Invalid input!";
-                                }                                       
-                        } while (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0);
-                        do
-                        {
-                            cout << "Day            :: ";
-                            cin >> studInfo[i].birthDate.day;
-                                if (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0)
-                                {
-                                    cout << "Invalid input!";
+                                case 1:
+                                cout << "-----------Change Full Name-----------\n";
+                                cout << "a. Last Name   :: ";
+                                cin.ignore();
+                                getline(cin, studInfo[i].fullName.lastName);
+                                cout << "b. First Name  :: ";
+                                getline(cin, studInfo[i].fullName.firstName);
+                                cout << "c. Middle Name :: ";
+                                getline(cin, studInfo[i].fullName.middleName);
+                                cout << "---Full Name modified successfully---";
+                                    break;
+                                case 2:
+                                    cout << "-----Change Sex-----\n";
+                                    do
+                                    {
+                                        cout << "Enter Sex (M/F): ";
+                                        cin >> studInfo[i].sex;
+                                            if (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F')
+                                            {
+                                                cout << "Invalid Input!";
+                                            }
+                                            
+                                    } while (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F');
+                                    cout << "-----Sex Successfully Changed-----";
+                                    break;
+                                case 3:
+                                cout << "-------------Change Birth Date--------\n";
+                                    do
+                                    {
+                                        cout << "Month (1-12)   :: ";
+                                        cin >> studInfo[i].birthDate.month;
+                                            if (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0)
+                                            {
+                                                cout << "Invalid input!";
+                                            }                                       
+                                    } while (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0);
+                                    do
+                                    {
+                                        cout << "Day            :: ";
+                                        cin >> studInfo[i].birthDate.day;
+                                            if (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0)
+                                            {
+                                                cout << "Invalid input!";
+                                            }
+                                    } while (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0);
+                                    do
+                                    {
+                                        cout << "Year: ";
+                                        cin >> studInfo[i].birthDate.year;
+                                            if (studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0)
+                                            {
+                                                cout << "Invalid input!";
+                                            }
+                                    } while (studInfo[i].birthDate.year > 2024 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0);                            
+                                            cout << "--------Birthdate changed Successfully---------";
+                                    break;
+                                case 4:
+                                    cout << "-----Change Phone Number-----\n";
+                                    cout << "Phone Number: ";
+                                    cin >> studInfo[i].phoneNumber;
+                                    cout << "-----Phone Number Changed Successfully-----";
+                                    break;
+                                case 5:
+                                    cout << "-----Change Email Address-----\n";
+                                    cout << "Email Address: ";
+                                    cin >> studInfo[i].email;
+                                    cout << "-----Email Address Changed Successfully-----";
+                                    break;
+                                case 6:
+                                    cout << "-----Change Address-----\n";
+                                    cout << "Address: ";
+                                    cin >> studInfo[i].address;
+                                    cout << "-----Address Changed Successfully-----";
+                                    break;
+                                case 7:
+                                    cout << "-----Change Course Enrolled-----\n";
+                                    cout << "Course Enrolled: ";
+                                    cin >> studInfo[i].courseEnrolled;
+                                    cout << "-----Course Enrolled Changed Successfully-----";
+                                    break;
+                                case 8:
+                                    
+                                    break;
+                                default:
+                                cout << "Invalid Selection!!";
+                                    break;
                                 }
-                        } while (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0);
-                        do
-                        {
-                            cout << "Year: ";
-                            cin >> studInfo[i].birthDate.year;
-                                if (studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0)
-                                {
-                                    cout << "Invalid input!";
-                                }
-                        } while (studInfo[i].birthDate.year > 2024 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0);                            
-                                cout << "--------Birthdate changed Successfully---------";
-                                break;
-                            case 3:
-
-                                break;
-                            case 4:
-
-                                break;
-                            case 5:
-
-                                break;
-                            case 6:
-
-                                break;
-                            case 7:
-
-                                break;
-                            case 8:
-
-                                break;
-                            case 9:
-
-                                break;
-                            default:
-                            cout << "Invalid Selection!!";
-                                break;
-                            }
                         }
                     }
                         if (!found2)
                         {
-                            
+                            cout << "Student not found!!!\n";
                         }
+                }
                     break;
                 case 3:
+                int findStudID3;
+                char delet3;
+                bool found3;
+                cout << "Enter Student ID: ";
+                cin >> findStudID3;
+                    for (int i = 0; i < studInfo.size(); i++)
+                    {
+                        if (studInfo[i].studentID == findStudID3)
+                        {
+                            cout << "Student ID      :: " << studInfo[i].studentID << endl;
+                            cout << "Full Name       :: " << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                            cout << "Sex             :: " << studInfo[i].sex << endl;
+                            cout << "Date of Birth   :: " << studInfo[i].birthDate.month << '/' << studInfo[i].birthDate.day << '/' << studInfo[i].birthDate.year << endl;
+                            cout << "Phone Number    :: " << studInfo[i].phoneNumber << endl;
+                            cout << "Email           :: " << studInfo[i].email << endl;
+                            cout << "Address         :: " << studInfo[i].address << endl;
+                            cout << "Course Enrolled :: " << studInfo[i].courseEnrolled << endl;
+                            found3 = true;
+                            cout << "Do you really want to delete this student record (Y/N)?: ";
+                            cin >> delet3;
+                            if (delet3 == 'Y' || delet3 == 'y')
+                            {
+                                studInfo.erase(studInfo.begin() + i);
+                                cout << "Student Information Deleted!!!!";
+                            }
+                            else
+                            {
+                                cout << "Student Information Not Deleted";
+                            }
+                        }
+                    }
+                        if (!found3)
+                        {
+                            cout << "Student Not Found!\n";
+                        }
 
                     break;
                 case 4:
