@@ -19,7 +19,8 @@
     C. Drop Course
         a. Select Course
         b. Confirm Course Drop
-3. Generate Reports
+3. Manage Student Performance
+4. Generate Reports
     A. Generate Student List
         a. By Course
         b. By Year
