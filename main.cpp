@@ -53,8 +53,7 @@ class dBaseAccess{
             }
             // create table
             char *sql = "CREATE TABLE IF NOT EXISTS students ("
-                        "id INTEGER PRIMARY KEY, "
-                        "studentID TEXT, "
+                        "studentID TEXT PRIMARY KEY, "
                         "lastName TEXT, "
                         "firstName TEXT, "
                         "middleName TEXT, "
@@ -73,6 +72,9 @@ class dBaseAccess{
                 cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
                 sqlite3_close(db);
             }
+    }
+    void push2Dbase(){
+
     }
     public:
     void runCreateDB(){

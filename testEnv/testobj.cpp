@@ -4,18 +4,6 @@
 
 using namespace std;
 
-// Function to insert data into the database
-int insertid(sqlite3* db, const string& data) {
-    char* errMsg;
-    string sql = "INSERT INTO testTable (testname) VALUES ('" + data + "');";
-    int rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &errMsg);
-    if (rc != SQLITE_OK) {
-        cerr << "SQL error: " << errMsg << endl;
-        sqlite3_free(errMsg);
-    }
-    return rc;
-}
-
 int main() {
     vector<string> nem;
     nem.push_back("TESTING");
@@ -37,9 +25,14 @@ int main() {
         return rc;
     }
 
-    rc = insertid(db, nem[0]);
+    // Insert data into the database
+    string data = nem[0];
+    char* errMsg;
+    string sqlInsert = "INSERT INTO testTable (testname) VALUES ('" + data + "');";
+    rc = sqlite3_exec(db, sqlInsert.c_str(), NULL, NULL, &errMsg);
     if (rc != SQLITE_OK) {
-        cerr << "Error insertion: " << sqlite3_errmsg(db) << endl;
+        cerr << "SQL error: " << errMsg << endl;
+        sqlite3_free(errMsg);
     }
 
     sqlite3_close(db);
