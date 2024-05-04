@@ -18,17 +18,22 @@ struct dateOfBirth
     {
         int month, day, year;
     }; 
+struct studAcadPerf
+    {
+        string course;
+        vector <string> subjects;
+        vector <float> subGrades;
+    };
+    
 int studentNum = 0;
 struct studentInfo
 {
-    string studentID;
     name fullName;
     dateOfBirth birthDate;
+    studAcadPerf acadPerformance;
     char sex;
+    string studentID, email, address, courseEnrolled;
     long long int phoneNumber;
-    string email;
-    string address;
-    string courseEnrolled;
 };
 
 vector <studentInfo> studInfo;
@@ -46,8 +51,28 @@ class dBaseAccess{
                 cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
                 sqlite3_close(db);
             }
-
-
+            // create table
+            char *sql = "CREATE TABLE IF NOT EXISTS students ("
+                        "id INTEGER PRIMARY KEY, "
+                        "studentID TEXT, "
+                        "lastName TEXT, "
+                        "firstName TEXT, "
+                        "middleName TEXT, "
+                        "sex TEXT, "
+                        "birthMonth INTEGER, "
+                        "birthDay INTEGER, "
+                        "birthYear INTEGER, "
+                        "phoneNumber BIGINT, "
+                        "email TEXT, "
+                        "address TEXT, "
+                        "courseEnrolled TEXT"
+                        ");";
+            rc = sqlite3_exec(db, sql, NULL, NULL, NULL);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }
     }
     public:
     void runCreateDB(){
@@ -74,16 +99,18 @@ class processing{
             while (loop)
             {
                 studentInfo student;
-                cout << "1. Register New Student" << endl;
-                cout << "2. Enroll Student in Course" << endl;
-                cout << "3. Drop Course" << endl;
-                cout << "4. Back" << endl;
+                cout << "|----Student Registration & Enrollment---|\n";
+                cout << "| 1. Register New Student                |\n";
+                cout << "| 2. Enroll Student in Course            |\n";
+                cout << "| 3. Drop Course                         |\n";
+                cout << "| 4. Back                                |\n";
+                cout << "|----------------------------------------|\n";
                 cout << "Selection: ";
                 cin >> sel;
                 switch (sel)
                 {
                 case 1:
-                    cout << "----Register New Student----\n";
+                    cout << "|----------Register New Student----------|\n";
                     // get full name
                     cout << "Enter Last Name: ";
                     cin.ignore(); //ignore the line above
@@ -107,7 +134,7 @@ class processing{
                                 }
                                     if (student.sex != 'm' && student.sex != 'M' && student.sex != 'f' && student.sex != 'F')
                                     {
-                                        cout << "Invalid Input!";
+                                        cout << "|-------------Invalid Input!-------------|\n";
                                     }
                         } while (student.sex != 'm' && student.sex != 'M' && student.sex != 'f' && student.sex != 'F');
                         // get birthdate and return if invalid
@@ -117,7 +144,7 @@ class processing{
                             cin >> student.birthDate.month;
                                 if (student.birthDate.month > 12 || student.birthDate.month <= 0)
                                 {
-                                    cout << "Invalid input!\n";
+                                        cout << "|-------------Invalid Input!-------------|\n";
                                 }                                       
                         } while (student.birthDate.month > 12 || student.birthDate.month <= 0);
                         do
@@ -126,7 +153,7 @@ class processing{
                             cin >> student.birthDate.day;
                                 if (student.birthDate.day > 31 || student.birthDate.day <= 0)
                                 {
-                                    cout << "Invalid input!\n";
+                                        cout << "|-------------Invalid Input!-------------|\n";
                                 }
                         } while (student.birthDate.day > 31 || student.birthDate.day <= 0);
                         do
@@ -135,7 +162,7 @@ class processing{
                             cin >> student.birthDate.year;
                                 if (student.birthDate.year <= 1900 || student.birthDate.year <= 1900 || student.birthDate.day <= 0)
                                 {
-                                    cout << "Invalid input!\n";
+                                        cout << "|-------------Invalid Input!-------------|\n";
                                 }
                         } while (student.birthDate.year > 2024 || student.birthDate.year <= 1900 || student.birthDate.day <= 0);
                         cout << "Enter Phone Number: ";
@@ -146,14 +173,14 @@ class processing{
                         cout << "Enter Address: ";
                         getline(cin, student.address);
                         studentNum++;
-                        student.studentID = to_string(year) + "--SC--" + to_string(studentNum);
+                        student.studentID = to_string(year) + "-SC-" + to_string(studentNum);
                         student.courseEnrolled = "Not Enrolled";
                     // push data to vector
                     studInfo.push_back(student);
                     // to use studInfo[index].1ststruct.nestedstruct;
-                    cout << "-----Student Registered-----\n";
+                    cout << "|-----------Student Registered-----------|\n";
                     printStudentInfo(studentNum - 1);
-                    cout << "----------------------------\n";
+                    cout << "|----------------------------------------|\n";
                     break;
                 case 2:
 
@@ -166,7 +193,7 @@ class processing{
                     break;
                 
                 default:
-                    cout << "Invalid Selection!!!\n";
+                    cout << "|-----------Invalid Selection!-----------|\n";
                     break;
                 }
             }
@@ -179,15 +206,18 @@ class processing{
             {
                 string findID;
                 bool found = false;
-                cout << "1. View Student Details" << endl;
-                cout << "2. Edit Student Details" << endl;
-                cout << "3. Delete Student Record" << endl;
-                cout << "4. Back" << endl;
+                cout << "|---------Manage Student Records---------|\n";
+                cout << "| 1. View Student Details                |\n";
+                cout << "| 2. Edit Student Details                |\n";
+                cout << "| 3. Delete Student Record               |\n";
+                cout << "| 4. Back                                |\n";
+                cout << "|----------------------------------------|\n";
                 cout << "Selection: ";
                 cin >> sel;
                 switch (sel)
                 {
                 case 1:
+                cout << "|----------View Student Details----------|\n";
                 cout << "Enter Student Id: ";
                 cin >> findID;
                     for (int i = 0; i < studInfo.size(); i++)
@@ -200,7 +230,9 @@ class processing{
                     }
                         if (!found)
                         {
-                            cout << "Student Not Found!\n";
+                            cout << "|----------------------------------------|\n";
+                            cout << "|-----------Student Not Found!-----------|\n";
+                            cout << "|----------------------------------------|\n";
                         }
                     break;
                 case 2:
@@ -226,7 +258,7 @@ class processing{
                                 switch (selection)
                                 {
                                 case 1:
-                                cout << "-----------Change Full Name-----------\n";
+                                cout << "|------------Change Full Name------------|\n";
                                 cout << "a. Last Name   :: ";
                                 cin.ignore();
                                 getline(cin, studInfo[i].fullName.lastName);
@@ -234,10 +266,10 @@ class processing{
                                 getline(cin, studInfo[i].fullName.firstName);
                                 cout << "c. Middle Name :: ";
                                 getline(cin, studInfo[i].fullName.middleName);
-                                cout << "---Full Name modified successfully---\n";
+                                cout << "|-----FullName modified successfully-----|\n";
                                     break;
                                 case 2:
-                                    cout << "-----Change Sex-----\n";
+                                    cout << "|---------------Change Sex---------------|\n";
                                     do
                                     {
                                         cout << "Enter Sex (M/F): ";
@@ -252,21 +284,21 @@ class processing{
                                         }
                                             if (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F')
                                             {
-                                                cout << "Invalid Input!";
+                                                cout << "|-------------Invalid Input!-------------|";
                                             }
                                             
                                     } while (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F');
-                                    cout << "-----Sex Successfully Changed-----\n";
+                                    cout << "|--------Sex Successfully Changed--------|\n";
                                     break;
                                 case 3:
-                                cout << "-------------Change Birth Date--------\n";
+                                cout << "|------------Change BirthDate------------|\n";
                                     do
                                     {
                                         cout << "Month (1-12)   :: ";
                                         cin >> studInfo[i].birthDate.month;
                                             if (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0)
                                             {
-                                                cout << "Invalid input!";
+                                                cout << "|-------------Invalid Input!-------------|";
                                             }                                       
                                     } while (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0);
                                     do
@@ -275,7 +307,7 @@ class processing{
                                         cin >> studInfo[i].birthDate.day;
                                             if (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0)
                                             {
-                                                cout << "Invalid input!";
+                                                cout << "|-------------Invalid Input!-------------|";
                                             }
                                     } while (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0);
                                     do
@@ -284,47 +316,52 @@ class processing{
                                         cin >> studInfo[i].birthDate.year;
                                             if (studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0)
                                             {
-                                                cout << "Invalid input!";
+                                                cout << "|-------------Invalid Input!-------------|";
                                             }
                                     } while (studInfo[i].birthDate.year > 2024 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0);                            
-                                            cout << "--------Birthdate changed Successfully---------";
+                                            cout << "|-----Birthdate changed Successfully-----|\n";
                                     break;
                                 case 4:
-                                    cout << "-----Change Phone Number-----\n";
+                                    cout << "|-----------Change PhoneNumber-----------|\n";
                                     cout << "Phone Number: ";
                                     cin >> studInfo[i].phoneNumber;
-                                    cout << "-----Phone Number Changed Successfully-----";
+                                    cout << "|----------------------------------------|\n";
+                                    cout << "|----PhoneNumber Changed Successfully----|\n";
                                     break;
                                 case 5:
-                                    cout << "-----Change Email Address-----\n";
+                                    cout << "|----------Change Email Address----------|\n";
                                     cout << "Email Address: ";
                                     cin >> studInfo[i].email;
-                                    cout << "-----Email Address Changed Successfully-----";
+                                    cout << "|---Email Address Changed Successfully---|\n";
                                     break;
                                 case 6:
-                                    cout << "-----Change Address-----\n";
+                                    cout << "|-------------Change Address-------------|\n";
                                     cout << "Address: ";
                                     cin >> studInfo[i].address;
-                                    cout << "-----Address Changed Successfully-----";
+                                    cout << "|------Address Changed Successfully------|\n";
                                     break;
                                 case 7:
-                                    cout << "-----Change Course Enrolled-----\n";
+                                    //need course shifting algorithm
+                                    //change subjects and drop subject
+                                    cout << "|---------Change Course Enrolled---------|\n";
                                     cout << "Course Enrolled: ";
                                     cin >> studInfo[i].courseEnrolled;
-                                    cout << "-----Course Enrolled Changed Successfully-----";
+                                    cout << "|--Course Enrolled Changed Successfully--|\n";
                                     break;
                                 case 8:
                                     continue;
                                     break;
                                 default:
-                                cout << "Invalid Selection!!";
+                                    cout << "|-----------Invalid Selection!-----------|\n";
                                     break;
                                 }
                         }
                     }
                         if (!found)
                         {
-                            cout << "Student not found!!!\n";
+                            cout << "|----------------------------------------|\n";
+                            cout << "|-----------Student Not Found!-----------|\n";
+                            cout << "|----------------------------------------|\n";
                         }
                     break;
                 case 3:
@@ -342,17 +379,19 @@ class processing{
                             if (delet3 == 'Y' || delet3 == 'y')
                             {
                                 studInfo.erase(studInfo.begin() + i);
-                                cout << "Student Information Deleted!!!!";
+                                cout << "|-----Student Information Deleted!!!-----|\n";
                             }
                             else
                             {
-                                cout << "Student Information Not Deleted";
+                                cout << "|-----StudentInformation Not Deleted-----|\n";
                             }
                         }
                     }
                         if (!found)
                         {
-                            cout << "Student Not Found!\n";
+                            cout << "|----------------------------------------|\n";
+                            cout << "|-----------Student Not Found!-----------|\n";
+                            cout << "|----------------------------------------|\n";
                         }
 
                     break;
@@ -361,7 +400,7 @@ class processing{
                     break;
                 
                 default:
-                    cout << "Invalid Selection!!!";
+                cout << "|-----------Invalid Selection!-----------|\n";
                     break;
                 }
             }
@@ -376,16 +415,33 @@ class processing{
             bool loop = true;
             while(loop)
             {
-                cout << "1. Generate Student List" << endl;
-                cout << "2. Generate Course Schedule" << endl;
-                cout << "3. Generate Academic Performance Report" << endl;
-                cout << "4. Back" << endl;
+                cout << "|------------Generate Reports------------|\n";
+                cout << "| 1. Generate Student List               |\n";
+                cout << "| 2. Generate Course Schedule            |\n";
+                cout << "| 3. Generate Academic Performance Report|\n";
+                cout << "| 4. Back                                |\n";
+                cout << "|----------------------------------------|\n";
                 cout << "Selection: ";
                 cin >> sel;
                 switch (sel)
                 {
                 case 1:
-                    /* code */
+                if (studInfo.size() <= 0)
+                {
+                cout << "|----------------------------------------|\n";
+                cout << "|---------No Students Registered---------|\n";
+                cout << "|----------------------------------------|\n";
+                }
+                else
+                {
+                cout << "|--------------Student List--------------|\n";
+                    for (int i = 0; i < studInfo.size(); i++)
+                    {
+                        cout << studInfo[i].studentID << " :: ";
+                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                    }
+                cout << "|----------------------------------------|\n";                    
+                }
                     break;
                 case 2:
 
@@ -398,7 +454,7 @@ class processing{
                     break;
                 
                 default:
-                    cout << "Invalid Selection!!!";
+                cout << "|-----------Invalid Selection!-----------|\n";
                     break;
                 }
             }
@@ -421,28 +477,27 @@ class processing{
                 genReports();
                 break;
             default:
-                cout << "Invalid Input\n";
+                cout << "|-----------Invalid Selection!-----------|\n";
                 break;
             }
         }
 };
 
-
-
 int main(){
     processing process;
-    dBaseAccess databaseAccess;
-    databaseAccess.runCreateDB();
+    dBaseAccess accessDbase;
     int sel;
     char selC;
+    accessDbase.runCreateDB();
     while ("true")
     {
-        cout << "Student Management System\n";
-        cout << "-----------Menu-----------\n";
-        cout << " 1. Student Registration and Enrollment\n";
-        cout << " 2. Manage Student Records\n";
-        cout << " 3. Manage Student Perfomance\n";
-        cout << " 4. Generate Reports\n";
+        cout << "|--------Student Management System-------|\n";
+        cout << "|------------------Menu------------------|\n";
+        cout << "| 1. Student Registration and Enrollment |\n";
+        cout << "| 2. Manage Student Records              |\n";
+        cout << "| 3. Manage Student Perfomance           |\n";
+        cout << "| 4. Generate Reports                    |\n";
+        cout << "|----------------------------------------|\n";
         cout << "Selection: ";
         cin >> sel;
         process.getMainUserSelect(sel);
