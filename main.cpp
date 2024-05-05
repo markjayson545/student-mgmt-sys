@@ -446,7 +446,11 @@ class processing{
                 }
                     break;
                 case 2:
-
+                /*
+                    for course schedule generation
+                    Will integrate Google Gemini API if I can learn it
+                    Google Gemini API is free so, will take advantage of that
+                */
                     break;
                 case 3:
 
