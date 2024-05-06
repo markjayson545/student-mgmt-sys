@@ -74,7 +74,29 @@ class dBaseAccess{
             }
     }
     void push2Dbase(){
+        sqlite3 *db;
+            int rc;
+            // open dBase
+            rc = sqlite3_open("Student Information.db", &db);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }
+            if (studInfo.size() > 0)
+            {
+                for (int i = 0; i < studInfo.size(); i++)
+                {
+                    char* errMsg;
+                    string sqlInsert = "INSERT INTO students (studentID, lastName, firstName, middleName, sex, birthMonth, birthDay, birthYear, phoneNumber, email, address, courseEnrolled)"
+                                        "VALUES ("
+                                        "'"+ studInfo[i].studentID +"'"
+                                        "'"+ studInfo[i].studentID +"'"
+                                        "'"+ studInfo[i].studentID +"'"
 
+                                        ");";
+                }                
+            }
     }
     public:
     void runCreateDB(){
@@ -185,7 +207,14 @@ class processing{
                     cout << "|----------------------------------------|\n";
                     break;
                 case 2:
-
+                    cout << "|--------Enroll Student in Course--------|\n";
+                    cout << "|------------Available Courses-----------|\n";
+                    cout << "| 1. Bachelor of |\n";
+                    cout << "| 2. Bachelor of |\n";
+                    cout << "| 3. Bachelor of |\n";
+                    cout << "| 4. Bachelor of |\n";
+                    cout << "| 5. Bachelor of |\n";
+                    cout << "|----------------------------------------|\n";
                     break;
                 case 3:
 
