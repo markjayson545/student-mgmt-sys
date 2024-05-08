@@ -26,6 +26,9 @@ struct studAcadPerf
     };
     
 int studentNum = 0;
+// store studentNum in a file
+// create vector of courses with corresponding capacity limit and sections
+
 struct studentInfo
 {
     name fullName;
@@ -72,6 +75,7 @@ class dBaseAccess{
                 cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
                 sqlite3_close(db);
             }
+            sqlite3_close(db);
     }
     void push2Dbase(){
         sqlite3 *db;
@@ -90,17 +94,36 @@ class dBaseAccess{
                     char* errMsg;
                     string sqlInsert = "INSERT INTO students (studentID, lastName, firstName, middleName, sex, birthMonth, birthDay, birthYear, phoneNumber, email, address, courseEnrolled)"
                                         "VALUES ("
-                                        "'"+ studInfo[i].studentID +"'"
-                                        "'"+ studInfo[i].studentID +"'"
-                                        "'"+ studInfo[i].studentID +"'"
-
+                                        "'"+ studInfo[i].studentID +"',"
+                                        "'"+ studInfo[i].fullName.lastName +"',"
+                                        "'"+ studInfo[i].fullName.firstName +"',"
+                                        "'"+ studInfo[i].fullName.middleName +"',"
+                                        "'"+ studInfo[i].sex + "',"
+                                        "'"+ to_string(studInfo[i].birthDate.month) + "',"
+                                        "'"+ to_string(studInfo[i].birthDate.day) +"',"
+                                        "'"+ to_string(studInfo[i].birthDate.year) +"',"
+                                        "'"+ to_string(studInfo[i].phoneNumber) +"',"
+                                        "'"+ studInfo[i].email +"',"
+                                        "'"+ studInfo[i].address +"',"
+                                        "'"+ studInfo[i].courseEnrolled +"'"
                                         ");";
+                    rc = sqlite3_exec(db, sqlInsert.c_str(), NULL, NULL, &errMsg);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "SQL Insert error: " << errMsg << endl;
+                        sqlite3_free(errMsg);
+                    }
+                    
                 }                
             }
+        sqlite3_close(db);
     }
     public:
     void runCreateDB(){
         createDB();
+    }
+    void runPush2DB(){
+        push2Dbase();
     }
 };
 
@@ -496,35 +519,30 @@ class processing{
         }
 
     public:
-        void getMainUserSelect(int sel){
-            switch (sel)
-            {
-            case 1:
-                stdRegNenroll();
-                break;
-            case 2:
-                mgmStdRecords();
-                break;
-            case 3:
-                mngGrades();
-                break;
-            case 4:
-                genReports();
-                break;
-            default:
-                cout << "|-----------Invalid Selection!-----------|\n";
-                break;
-            }
-        }
+
+    void runStdRegEnroll(){
+        stdRegNenroll();
+    }
+    void runStdRecords(){
+        mgmStdRecords();
+    }
+    void runMngGrades(){
+        mngGrades();
+    }
+    void runGenReports(){
+        genReports();
+    }
 };
 
-int main(){
+int main()
+{
     processing process;
     dBaseAccess accessDbase;
     int sel;
     char selC;
     accessDbase.runCreateDB();
-    while ("true")
+    bool loop = true;
+    while (loop)
     {
         cout << "|--------Student Management System-------|\n";
         cout << "|------------------Menu------------------|\n";
@@ -532,10 +550,32 @@ int main(){
         cout << "| 2. Manage Student Records              |\n";
         cout << "| 3. Manage Student Perfomance           |\n";
         cout << "| 4. Generate Reports                    |\n";
+        cout << "| 5. Exit                                |\n";
         cout << "|----------------------------------------|\n";
         cout << "Selection: ";
         cin >> sel;
-        process.getMainUserSelect(sel);
+        switch (sel)
+            {
+            case 1:
+                process.runStdRegEnroll();
+                break;
+            case 2:
+                process.runStdRecords();
+                break;
+            case 3:
+                process.runMngGrades();
+                break;
+            case 4:
+                process.runGenReports();
+                break;
+            case 5:
+                loop = false;
+                break;
+            default:
+                cout << "|-----------Invalid Selection!-----------|\n";
+                break;
+            }
     }
+    accessDbase.runPush2DB();
     return 0;
 }
