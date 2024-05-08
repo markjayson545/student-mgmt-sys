@@ -10,7 +10,13 @@ using namespace std;
 time_t t = time(nullptr);
 tm *const pTInfo = localtime(&t);
 int year = 1900 + pTInfo->tm_year;
-
+struct studAcadPerf
+    {
+        string course;
+        vector <int> capacity;
+        vector <string> subjects;
+        vector <float> subGrades;
+    };
 struct name
     {
     string lastName, firstName, middleName;
@@ -19,12 +25,6 @@ struct dateOfBirth
     {
         int month, day, year;
     }; 
-struct studAcadPerf
-    {
-        string course;
-        vector <string> subjects;
-        vector <float> subGrades;
-    };
     
 int studentNum = 0;
 // store studentNum in a file
@@ -41,6 +41,19 @@ struct studentInfo
 
 vector <studentInfo> studInfo;
 
+class login
+{
+    private: 
+        string username = "username";
+        string password =  "admin";
+    public:
+        string getUsername(){
+            return username;
+        }
+        string getPassword(){
+            return password;
+        }
+};
 class dBaseAccess{
     private:
     void createDB(){
@@ -128,18 +141,18 @@ class dBaseAccess{
             sqlite3_close(db);
         }
         const char* sql = "SELECT studentID, "
-                                "lastName, "
-                                "firstName, "
-                                "middleName, "
-                                "sex, "
-                                "birthMonth, "
-                                "birthDay, "
-                                "birthYear, "
-                                "phoneNumber, "
-                                "email, "
-                                "address, "
-                                "courseEnrolled"
-                                "FROM students;";
+                            "lastName, "
+                            "firstName, "
+                            "middleName, "
+                            "sex, "
+                            "birthMonth, "
+                            "birthDay, "
+                            "birthYear, "
+                            "phoneNumber, "
+                            "email, "
+                            "address, "
+                            "courseEnrolled "
+                            "FROM students;";
         sqlite3_stmt *stmt;
         rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
         if (rc != SQLITE_OK)
@@ -150,10 +163,23 @@ class dBaseAccess{
         }
         while (sqlite3_step(stmt) == SQLITE_ROW)
         {
-            
+            studentInfo student;
+            student.studentID = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            student.fullName.lastName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            student.fullName.firstName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            student.fullName.middleName = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+            student.sex = *reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+            student.birthDate.month = sqlite3_column_int(stmt, 5);
+            student.birthDate.day = sqlite3_column_int(stmt, 6);
+            student.birthDate.year = sqlite3_column_int(stmt, 7);
+            student.phoneNumber = sqlite3_column_int64(stmt, 8);
+            student.email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
+            student.address = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10));
+            student.courseEnrolled = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 11));
+            studInfo.push_back(student);
         }
-        
-        
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
     }
     public:
     void runCreateDB(){
@@ -161,6 +187,9 @@ class dBaseAccess{
     }
     void runPush2DB(){
         push2Dbase();
+    }
+    void runPullFDbase(){
+        pullFDbase();
     }
 };
 
@@ -573,9 +602,16 @@ int main()
 {
     processing process;
     dBaseAccess accessDbase;
+    login loginInfo;
     int sel;
     char selC;    
+    string admin, pass;
+    ifstream getStdNum("numStud.data");
+    string stdnum;
+    getline(getStdNum, stdnum);
+    studentNum = stoi(stdnum);
     accessDbase.runCreateDB();
+    accessDbase.runPullFDbase();
     bool loop = true;
     while (loop)
     {
@@ -595,13 +631,49 @@ int main()
                 process.runStdRegEnroll();
                 break;
             case 2:
-                process.runStdRecords();
+            cout << "|--------Admin Previlage Required--------|\n";
+            cout << "| Username: ";
+            cin >> admin;
+            cout << "| Password: ";
+            cin >> pass;
+            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
+            {
+                process.runStdRecords();                
+            }
+            else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            {
+                cout << "|---Username and Password did not match--|\n";
+            }           
                 break;
             case 3:
-                process.runMngGrades();
+            cout << "|--------Admin Previlage Required--------|\n";
+            cout << "| Username: ";
+            cin >> admin;
+            cout << "| Password: ";
+            cin >> pass;
+            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
+            {
+                process.runMngGrades();                
+            }
+        else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            {
+                cout << "|---Username and Password did not match--|\n";
+            }           
                 break;
             case 4:
-                process.runGenReports();
+            cout << "|--------Admin Previlage Required--------|\n";
+            cout << "| Username: ";
+            cin >> admin;
+            cout << "| Password: ";
+            cin >> pass;
+            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
+            {
+                process.runGenReports();                
+            }
+            else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            {
+                cout << "|---Username and Password did not match--|\n";
+            }           
                 break;
             case 5:
                 loop = false;
@@ -611,6 +683,10 @@ int main()
                 break;
             }
     }
+    ofstream stdNumber("numStud.data");
+    stdNumber << studentNum;
     accessDbase.runPush2DB();
+    getStdNum.close();
+    stdNumber.close();
     return 0;
 }
