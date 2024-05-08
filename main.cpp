@@ -2,6 +2,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <sqlite3.h>
 using namespace std;
 
@@ -28,7 +29,6 @@ struct studAcadPerf
 int studentNum = 0;
 // store studentNum in a file
 // create vector of courses with corresponding capacity limit and sections
-
 struct studentInfo
 {
     name fullName;
@@ -117,6 +117,43 @@ class dBaseAccess{
                 }                
             }
         sqlite3_close(db);
+    }
+    void pullFDbase(){
+        sqlite3 *db;
+        int rc;
+        rc = sqlite3_open("Student Information.db", &db);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+            sqlite3_close(db);
+        }
+        const char* sql = "SELECT studentID, "
+                                "lastName, "
+                                "firstName, "
+                                "middleName, "
+                                "sex, "
+                                "birthMonth, "
+                                "birthDay, "
+                                "birthYear, "
+                                "phoneNumber, "
+                                "email, "
+                                "address, "
+                                "courseEnrolled"
+                                "FROM students;";
+        sqlite3_stmt *stmt;
+        rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+        }
+        while (sqlite3_step(stmt) == SQLITE_ROW)
+        {
+            
+        }
+        
+        
     }
     public:
     void runCreateDB(){
@@ -232,11 +269,9 @@ class processing{
                 case 2:
                     cout << "|--------Enroll Student in Course--------|\n";
                     cout << "|------------Available Courses-----------|\n";
-                    cout << "| 1. Bachelor of |\n";
-                    cout << "| 2. Bachelor of |\n";
+                    cout << "| 1. Bachelor of Information Technology  |\n";
+                    cout << "| 2. Bachelor of Business Administration |\n";
                     cout << "| 3. Bachelor of |\n";
-                    cout << "| 4. Bachelor of |\n";
-                    cout << "| 5. Bachelor of |\n";
                     cout << "|----------------------------------------|\n";
                     break;
                 case 3:
@@ -539,7 +574,7 @@ int main()
     processing process;
     dBaseAccess accessDbase;
     int sel;
-    char selC;
+    char selC;    
     accessDbase.runCreateDB();
     bool loop = true;
     while (loop)
