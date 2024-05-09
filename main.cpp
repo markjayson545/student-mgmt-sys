@@ -455,7 +455,8 @@ class processing{
                                 case 6:
                                     cout << "|-------------Change Address-------------|\n";
                                     cout << "Address: ";
-                                    cin >> studInfo[i].address;
+                                    cin.ignore();
+                                    getline(cin, studInfo[i].address);
                                     cout << "|------Address Changed Successfully------|\n";
                                     break;
                                 case 7:
@@ -497,7 +498,9 @@ class processing{
                             if (delet3 == 'Y' || delet3 == 'y')
                             {
                                 studInfo.erase(studInfo.begin() + i);
+                                studentNum--;
                                 cout << "|-----Student Information Deleted!!!-----|\n";
+
                             }
                             else
                             {
@@ -685,8 +688,10 @@ int main()
     }
     ofstream stdNumber("numStud.data");
     stdNumber << studentNum;
-    accessDbase.runPush2DB();
     getStdNum.close();
     stdNumber.close();
+    remove("Student Information.db");
+    accessDbase.runCreateDB();
+    accessDbase.runPush2DB();
     return 0;
 }
