@@ -12,10 +12,8 @@ tm *const pTInfo = localtime(&t);
 int year = 1900 + pTInfo->tm_year;
 struct studAcadPerf
     {
-        string course;
-        vector <int> capacity;
-        vector <string> subjects;
-        vector <float> subGrades;
+        string studId;
+        float grades[3];
     };
 struct name
     {
@@ -27,6 +25,7 @@ struct dateOfBirth
     }; 
     
 int studentNum = 0;
+int studentEnrolled = 0;
 // store studentNum in a file
 // create vector of courses with corresponding capacity limit and sections
 struct studentInfo
@@ -38,9 +37,8 @@ struct studentInfo
     string studentID, email, address, courseEnrolled;
     long long int phoneNumber;
 };
-
 vector <studentInfo> studInfo;
-
+int studCap[3] = {30, 30, 30};
 class login
 {
     private: 
@@ -88,11 +86,67 @@ class dBaseAccess{
                 cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
                 sqlite3_close(db);
             }
+
+
+            /* char *createBSBA = "CREATE TABLE IF NOT EXISTS BSBA ("
+                                "studentID TEXT PRIMARY KEY, "
+                                ""
+                                ");"; */
             sqlite3_close(db);
+    }
+    void createGradingSheets(){
+        sqlite3 *db;
+            int rc;
+            rc = sqlite3_open("Student Information.db", &db);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }
+            char *createBSIT = "CREATE TABLE IF NOT EXISTS BSIT ("
+                        "studentID TEXT PRIMARY KEY, "
+                        "CC101 FLOAT, "
+                        "CC102 FLOAT, "
+                        "GE6 FLOAT "
+                        ");";
+            rc = sqlite3_exec(db, createBSIT, NULL, NULL, NULL);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }
+
+            char *createBSBA = "CREATE TABLE IF NOT EXISTS BSBA ("
+                                "studentID TEXT PRIMARY KEY, "
+                                "testSub1 FLOAT, "
+                                "testSub2 FLOAT, "
+                                "testSub3 FLOAT "
+                                ");";
+            rc = sqlite3_exec(db, createBSBA, NULL, NULL, NULL);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }
+
+            char *createBSA = "CREATE TABLE IF NOT EXISTS BSA ("
+                                "studentID TEXT PRIMARY KEY, "
+                                "testSub1 FLOAT, "
+                                "testSub2 FLOAT, "
+                                "testSub3 FLOAT "
+                                ");";
+            rc = sqlite3_exec(db, createBSA, NULL, NULL, NULL);
+            if (rc != SQLITE_OK)
+            {
+                cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
+                sqlite3_close(db);
+            }            
+
+        sqlite3_close(db);
     }
     void push2Dbase(){
         sqlite3 *db;
-            int rc;
+            int rc; 
             // open dBase
             rc = sqlite3_open("Student Information.db", &db);
             if (rc != SQLITE_OK)
@@ -102,7 +156,7 @@ class dBaseAccess{
             }
             if (studInfo.size() > 0)
             {
-                for (int i = 0; i < studInfo.size(); i++)
+                for (int i = 0; i < studentNum; i++)
                 {
                     char* errMsg;
                     string sqlInsert = "INSERT INTO students (studentID, lastName, firstName, middleName, sex, birthMonth, birthDay, birthYear, phoneNumber, email, address, courseEnrolled)"
@@ -126,7 +180,6 @@ class dBaseAccess{
                         cerr << "SQL Insert error: " << errMsg << endl;
                         sqlite3_free(errMsg);
                     }
-                    
                 }                
             }
         sqlite3_close(db);
@@ -181,15 +234,303 @@ class dBaseAccess{
         sqlite3_finalize(stmt);
         sqlite3_close(db);
     }
+    int getStudentCount(string what){
+        sqlite3 *db;
+        int rc;
+        int returnNumber;
+        rc = sqlite3_open("Student Information.db", &db);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+            sqlite3_close(db);
+        }
+            if (what == "studentNumbers")
+            {
+                char *getRows = "SELECT COUNT(*) FROM students;";
+                sqlite3_stmt *getRowss;
+
+                if (sqlite3_prepare_v2(db, getRows, -1, &getRowss, NULL) != SQLITE_OK)
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                    sqlite3_close(db);
+                }
+
+                if (sqlite3_step(getRowss) == SQLITE_ROW)
+                {
+                    returnNumber = sqlite3_column_int(getRowss, 0);
+                }
+                else
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                }
+                sqlite3_finalize(getRowss);
+            }
+            else if (what == "BSITenrolled")
+            {
+                char *getBSIT = "SELECT COUNT(*) FROM BSIT;";
+                sqlite3_stmt *getBSITrows;
+
+                if (sqlite3_prepare_v2(db, getBSIT, -1, &getBSITrows, NULL) != SQLITE_OK)
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                    sqlite3_close(db);
+                }
+
+                if (sqlite3_step(getBSITrows) == SQLITE_ROW)
+                {
+                    returnNumber = sqlite3_column_int(getBSITrows, 0);
+                }
+                else
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                }
+                sqlite3_finalize(getBSITrows);
+            }
+            else if (what == "BSBAenrolled")
+            {
+                char *getBSBA = "SELECT COUNT(*) FROM BSBA;";
+                sqlite3_stmt *getBSBArows;
+
+                if (sqlite3_prepare_v2(db, getBSBA, -1, &getBSBArows, NULL) != SQLITE_OK)
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                    sqlite3_close(db);
+                }
+
+                if (sqlite3_step(getBSBArows) == SQLITE_ROW)
+                {
+                    returnNumber = sqlite3_column_int(getBSBArows, 0);
+                }
+                else
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                }
+                sqlite3_finalize(getBSBArows);
+            }
+            else if (what == "BSAenrolled")
+            {
+                char *getBSA = "SELECT COUNT(*) FROM BSA;";
+                sqlite3_stmt *getBSArows;
+
+                if (sqlite3_prepare_v2(db, getBSA, -1, &getBSArows, NULL) != SQLITE_OK)
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                    sqlite3_close(db);
+                }
+
+                if (sqlite3_step(getBSArows) == SQLITE_ROW)
+                {
+                    returnNumber = sqlite3_column_int(getBSArows, 0);
+                }
+                else
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                }
+                sqlite3_finalize(getBSArows);
+                
+            }
+            else if (what == "totalEnrolled")
+            {
+                char *enrolledRows = "SELECT ((SELECT COUNT(*) FROM BSA) + (SELECT COUNT(*) FROM BSIT) + (SELECT COUNT(*) FROM BSBA)) AS Total_Count;";
+                sqlite3_stmt *getTotalEnrolled;
+                
+                if (sqlite3_prepare_v2(db, enrolledRows, -1, &getTotalEnrolled, NULL) != SQLITE_OK)
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                    sqlite3_close(db);
+                }
+
+                if (sqlite3_step(getTotalEnrolled) == SQLITE_ROW)
+                {
+                    returnNumber = sqlite3_column_int(getTotalEnrolled, 0);
+                }
+                else
+                {
+                    cerr << "Error getting rows: " << sqlite3_errmsg(db) << endl;
+                }
+                sqlite3_finalize(getTotalEnrolled);
+            }
+            sqlite3_close(db);
+            return returnNumber;
+    }
+    void pushGrades(){
+        sqlite3 *db;
+        int rc;
+        char*errMsg;
+        rc = sqlite3_open("Student Information.db", &db);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+            sqlite3_close(db);
+        }
+        for (int i = 0; i < studInfo.size(); i++)
+        {
+            if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+            {
+                string insertBSIT = "INSERT INTO BSIT (studentID, CC101, CC102, GE6)"
+                                    "VALUES ("
+                                    "'"+ studInfo[i].studentID +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    ");";
+                    rc = sqlite3_exec(db, insertBSIT.c_str(), NULL, NULL, &errMsg);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "SQL Insert error: " << errMsg << endl;
+                        sqlite3_free(errMsg);
+                    }
+            }
+            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+            {
+                string insertBSBA = "INSERT INTO BSBA (studentID, testSub1, testSub2, testSub3)"
+                                    "VALUES ("
+                                    "'"+ studInfo[i].studentID +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    ");";
+                    rc = sqlite3_exec(db, insertBSBA.c_str(), NULL, NULL, &errMsg);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "SQL Insert error: " << errMsg << endl;
+                        sqlite3_free(errMsg);
+                    }
+            }
+            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+            {
+                string insertBSA = "INSERT INTO BSA (studentID, testSub1, testSub2, testSub3)"
+                                    "VALUES ("
+                                    "'"+ studInfo[i].studentID +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
+                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    ");";
+                    rc = sqlite3_exec(db, insertBSA.c_str(), NULL, NULL, &errMsg);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "SQL Insert error: " << errMsg << endl;
+                        sqlite3_free(errMsg);
+                    }
+            }
+        }
+        sqlite3_close(db);
+    }
+    void pullGrades(){
+        sqlite3 *db;
+        int rc;
+        char*errMsg;
+        rc = sqlite3_open("Student Information.db", &db);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
+            sqlite3_close(db);
+        }
+        for (int i = 0; i < studInfo.size(); i++)
+        {
+            if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+            {
+                const char* selectBSIT = "SELECT studentID, "
+                                        "CC101, "
+                                        "CC102, "
+                                        "GE6 "
+                                        "FROM BSIT;";
+                    sqlite3_stmt *selBSIT;
+                    rc = sqlite3_prepare_v2(db, selectBSIT, -1, &selBSIT, nullptr);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+                        sqlite3_finalize(selBSIT);
+                        sqlite3_close(db);
+                    }
+                    while (sqlite3_step(selBSIT) == SQLITE_ROW)
+                    {
+                        studentInfo studentt;
+                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSIT, 0));
+                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSIT, 1));
+                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSIT, 2));
+                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSIT, 3));
+                        studInfo.push_back(studentt);
+                    }
+                    sqlite3_finalize(selBSIT);
+                    sqlite3_close(db);
+            }
+            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+            {
+                const char* selectBSBA = "SELECT studentID, "
+                                        "testSub1, "
+                                        "testSub2, "
+                                        "testSub3 "
+                                        "FROM BSBA;";
+                    sqlite3_stmt *selBSBA;
+                    rc = sqlite3_prepare_v2(db, selectBSBA, -1, &selBSBA, nullptr);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+                        sqlite3_finalize(selBSBA);
+                        sqlite3_close(db);
+                    }
+                    while (sqlite3_step(selBSBA) == SQLITE_ROW)
+                    {
+                        studentInfo studentt;
+                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSBA, 0));
+                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSBA, 1));
+                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSBA, 2));
+                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSBA, 3));
+                        studInfo.push_back(studentt);                        
+                    }
+                    sqlite3_finalize(selBSBA);
+                    sqlite3_close(db);
+            }
+            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+            {
+                const char* selectBSA = "SELECT studentID, "
+                                        "testSub1, "
+                                        "testSub2, "
+                                        "testSub3 "
+                                        "FROM BSA;";
+                    sqlite3_stmt *selBSA;
+                    rc = sqlite3_prepare_v2(db, selectBSA, -1, &selBSA, nullptr);
+                    if (rc != SQLITE_OK)
+                    {
+                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+                        sqlite3_finalize(selBSA);
+                        sqlite3_close(db);
+                    }
+                    while (sqlite3_step(selBSA) == SQLITE_ROW)
+                    {
+                        studentInfo studentt;
+                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSA, 0));
+                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSA, 1));
+                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSA, 2));
+                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSA, 3));
+                        studInfo.push_back(studentt);
+                    }
+                    sqlite3_finalize(selBSA);
+                    sqlite3_close(db);
+            }
+        }
+        sqlite3_close(db);
+    }
     public:
     void runCreateDB(){
         createDB();
+        createGradingSheets();
     }
     void runPush2DB(){
         push2Dbase();
     }
     void runPullFDbase(){
         pullFDbase();
+    }
+    int runGetStudentCount(string what){
+        return getStudentCount(what);
+    }
+    void runPushGrades(){
+        pushGrades();
+    }
+    void runPullGrades(){
+        pullGrades();
     }
 };
 
@@ -211,6 +552,8 @@ class processing{
             bool loop = true;
             while (loop)
             {
+                string findStudID;
+                bool find;
                 studentInfo student;
                 cout << "|----Student Registration & Enrollment---|\n";
                 cout << "| 1. Register New Student                |\n";
@@ -297,11 +640,89 @@ class processing{
                     break;
                 case 2:
                     cout << "|--------Enroll Student in Course--------|\n";
-                    cout << "|------------Available Courses-----------|\n";
-                    cout << "| 1. Bachelor of Information Technology  |\n";
-                    cout << "| 2. Bachelor of Business Administration |\n";
-                    cout << "| 3. Bachelor of |\n";
-                    cout << "|----------------------------------------|\n";
+                    cout << "Enter Student ID: ";
+                    cin >> findStudID;
+                    
+                        for (int i = 0; i < studInfo.size(); i++)
+                        {
+                            if (studInfo[i].studentID == findStudID)
+                            {
+                                if (studInfo[i].courseEnrolled == "Not Enrolled")
+                                {
+                                    int selections;
+                                    cout << "|------------Available Courses-----------|\n";
+                                    cout << "| 1. Bachelor of Science in Information Technology\n";
+                                    cout << "| 2. Bachelor of Science in Business Administration\n";
+                                    cout << "| 3. Bachelor of Science in Agriculture\n";
+                                    cout << "|----------------------------------------|\n";
+                                    cin >> selections;
+                                    switch (selections)
+                                    {
+                                    case 1:
+                                        if (studCap != 0)
+                                        {
+                                            studCap[0]--;
+                                            studInfo[i].courseEnrolled = "Bachelor of Science in Information Technology";
+                                            studInfo[i].acadPerformance.grades[0] = 0.00;
+                                            studInfo[i].acadPerformance.grades[1] = 0.00;
+                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            cout << "|----------------------------------------|\n";
+                                            cout << "|---Student Officialy Enrolled on BSIT---|\n";
+                                            cout << "|----------------------------------------|\n";
+                                            studentEnrolled++;
+                                        }
+                                        break;
+                                    case 2:
+                                        if (studCap != 0)
+                                        {
+                                            studCap[0]--;
+                                            studInfo[i].courseEnrolled = "Bachelor of Science in Business Administration";
+                                            studInfo[i].acadPerformance.grades[0] = 0.00;
+                                            studInfo[i].acadPerformance.grades[1] = 0.00;
+                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            cout << "|----------------------------------------|\n";
+                                            cout << "|---Student Officialy Enrolled on BSBA---|\n";
+                                            cout << "|----------------------------------------|\n";
+                                            studentEnrolled++;
+                                        }
+                                        break;
+                                    case 3:
+                                        if (studCap != 0)
+                                        {
+                                            studCap[0]--;
+                                            studInfo[i].courseEnrolled = "Bachelor of Science in Agriculture";
+                                            studInfo[i].acadPerformance.grades[0] = 0.00;
+                                            studInfo[i].acadPerformance.grades[1] = 0.00;
+                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            cout << "|----------------------------------------|\n";
+                                            cout << "|----Student Officialy Enrolled on BSA---|\n";
+                                            cout << "|----------------------------------------|\n";
+                                            studentEnrolled++;
+                                        }
+                                        break;
+                                    default:
+                                        cout << "|-------------Invalid Input!-------------|\n";
+                                        break;
+                                    }
+                                    find = true;
+                                }
+                                else if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology" ||
+                                        studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration" ||
+                                        studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                {
+                                    cout << "|----------------------------------------|\n";
+                                    cout << "|--------Student Already Enrolled--------|\n";
+                                    cout << "|----------------------------------------|\n";
+                                    find = true;
+                                }
+                            }
+                        }
+                        if (!find)
+                        {
+                            cout << "|----------------------------------------|\n";
+                            cout << "|-----------Student Not Found!-----------|\n";
+                            cout << "|----------------------------------------|\n";
+                        }
                     break;
                 case 3:
 
@@ -609,15 +1030,19 @@ int main()
     int sel;
     char selC;    
     string admin, pass;
-    ifstream getStdNum("numStud.data");
-    string stdnum;
-    getline(getStdNum, stdnum);
-    studentNum = stoi(stdnum);
     accessDbase.runCreateDB();
     accessDbase.runPullFDbase();
+    studentEnrolled = accessDbase.runGetStudentCount("totalEnrolled");
+    if (studentEnrolled > 0)
+    {
+        accessDbase.runPullGrades();
+    }
+    studentNum = accessDbase.runGetStudentCount("studentNumbers");
+    cout << studentNum << accessDbase.runGetStudentCount("totalEnrolled");
     bool loop = true;
     while (loop)
     {
+        
         cout << "|--------Student Management System-------|\n";
         cout << "|------------------Menu------------------|\n";
         cout << "| 1. Student Registration and Enrollment |\n";
@@ -643,7 +1068,7 @@ int main()
             {
                 process.runStdRecords();                
             }
-            else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
             {
                 cout << "|---Username and Password did not match--|\n";
             }           
@@ -658,7 +1083,7 @@ int main()
             {
                 process.runMngGrades();                
             }
-        else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
             {
                 cout << "|---Username and Password did not match--|\n";
             }           
@@ -673,7 +1098,7 @@ int main()
             {
                 process.runGenReports();                
             }
-            else if(admin != loginInfo.getUsername() && pass != loginInfo.getPassword())
+            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
             {
                 cout << "|---Username and Password did not match--|\n";
             }           
@@ -686,12 +1111,12 @@ int main()
                 break;
             }
     }
-    ofstream stdNumber("numStud.data");
-    stdNumber << studentNum;
-    getStdNum.close();
-    stdNumber.close();
     remove("Student Information.db");
     accessDbase.runCreateDB();
     accessDbase.runPush2DB();
+    if (accessDbase.runGetStudentCount("totalEnrolled") > 0 || studentEnrolled > 0)
+    {
+        accessDbase.runPushGrades();
+    }    
     return 0;
 }
