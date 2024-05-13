@@ -12,8 +12,8 @@ tm *const pTInfo = localtime(&t);
 int year = 1900 + pTInfo->tm_year;
 struct studAcadPerf
     {
-        string studId;
-        float grades[3];
+        string studId, course;
+        vector <float> grades;
     };
 struct name
     {
@@ -32,12 +32,13 @@ struct studentInfo
 {
     name fullName;
     dateOfBirth birthDate;
-    studAcadPerf acadPerformance;
     char sex;
     string studentID, email, address, courseEnrolled;
     long long int phoneNumber;
 };
+
 vector <studentInfo> studInfo;
+vector <studAcadPerf> studGrades;
 int studCap[3] = {30, 30, 30};
 class login
 {
@@ -86,8 +87,6 @@ class dBaseAccess{
                 cerr << "Error creating table: " << sqlite3_errmsg(db) << endl;
                 sqlite3_close(db);
             }
-
-
             /* char *createBSBA = "CREATE TABLE IF NOT EXISTS BSBA ("
                                 "studentID TEXT PRIMARY KEY, "
                                 ""
@@ -363,16 +362,16 @@ class dBaseAccess{
             cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
             sqlite3_close(db);
         }
-        for (int i = 0; i < studInfo.size(); i++)
+        for (int i = 0; i < studGrades.size(); i++)
         {
-            if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+            if (studGrades[i].course == "Bachelor of Science in Information Technology")
             {
                 string insertBSIT = "INSERT INTO BSIT (studentID, CC101, CC102, GE6)"
                                     "VALUES ("
                                     "'"+ studInfo[i].studentID +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    "'"+ to_string(studGrades[i].grades[0]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[1]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[2]) +"'"
                                     ");";
                     rc = sqlite3_exec(db, insertBSIT.c_str(), NULL, NULL, &errMsg);
                     if (rc != SQLITE_OK)
@@ -381,14 +380,14 @@ class dBaseAccess{
                         sqlite3_free(errMsg);
                     }
             }
-            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+            else if (studGrades[i].course == "Bachelor of Science in Business Administration")
             {
                 string insertBSBA = "INSERT INTO BSBA (studentID, testSub1, testSub2, testSub3)"
                                     "VALUES ("
                                     "'"+ studInfo[i].studentID +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    "'"+ to_string(studGrades[i].grades[0]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[1]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[2]) +"'"
                                     ");";
                     rc = sqlite3_exec(db, insertBSBA.c_str(), NULL, NULL, &errMsg);
                     if (rc != SQLITE_OK)
@@ -397,14 +396,14 @@ class dBaseAccess{
                         sqlite3_free(errMsg);
                     }
             }
-            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+            else if (studGrades[i].course == "Bachelor of Science in Agriculture")
             {
                 string insertBSA = "INSERT INTO BSA (studentID, testSub1, testSub2, testSub3)"
                                     "VALUES ("
                                     "'"+ studInfo[i].studentID +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[0]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[1]) +"',"
-                                    "'"+ to_string(studInfo[i].acadPerformance.grades[2]) +"'"
+                                    "'"+ to_string(studGrades[i].grades[0]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[1]) +"',"
+                                    "'"+ to_string(studGrades[i].grades[2]) +"'"
                                     ");";
                     rc = sqlite3_exec(db, insertBSA.c_str(), NULL, NULL, &errMsg);
                     if (rc != SQLITE_OK)
@@ -426,90 +425,80 @@ class dBaseAccess{
             cerr << "Error Opening Database: " << sqlite3_errmsg(db) << endl;
             sqlite3_close(db);
         }
-        for (int i = 0; i < studInfo.size(); i++)
+        const char* selectBSIT = "SELECT studentID, "
+                    "CC101, "
+                    "CC102, "
+                    "GE6 "
+                    "FROM BSIT;";
+        sqlite3_stmt *selBSIT;
+        rc = sqlite3_prepare_v2(db, selectBSIT, -1, &selBSIT, nullptr);
+        if (rc != SQLITE_OK)
         {
-            if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
-            {
-                const char* selectBSIT = "SELECT studentID, "
-                                        "CC101, "
-                                        "CC102, "
-                                        "GE6 "
-                                        "FROM BSIT;";
-                    sqlite3_stmt *selBSIT;
-                    rc = sqlite3_prepare_v2(db, selectBSIT, -1, &selBSIT, nullptr);
-                    if (rc != SQLITE_OK)
-                    {
-                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
-                        sqlite3_finalize(selBSIT);
-                        sqlite3_close(db);
-                    }
-                    while (sqlite3_step(selBSIT) == SQLITE_ROW)
-                    {
-                        studentInfo studentt;
-                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSIT, 0));
-                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSIT, 1));
-                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSIT, 2));
-                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSIT, 3));
-                        studInfo.push_back(studentt);
-                    }
-                    sqlite3_finalize(selBSIT);
-                    sqlite3_close(db);
-            }
-            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
-            {
-                const char* selectBSBA = "SELECT studentID, "
-                                        "testSub1, "
-                                        "testSub2, "
-                                        "testSub3 "
-                                        "FROM BSBA;";
-                    sqlite3_stmt *selBSBA;
-                    rc = sqlite3_prepare_v2(db, selectBSBA, -1, &selBSBA, nullptr);
-                    if (rc != SQLITE_OK)
-                    {
-                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
-                        sqlite3_finalize(selBSBA);
-                        sqlite3_close(db);
-                    }
-                    while (sqlite3_step(selBSBA) == SQLITE_ROW)
-                    {
-                        studentInfo studentt;
-                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSBA, 0));
-                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSBA, 1));
-                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSBA, 2));
-                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSBA, 3));
-                        studInfo.push_back(studentt);                        
-                    }
-                    sqlite3_finalize(selBSBA);
-                    sqlite3_close(db);
-            }
-            else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
-            {
-                const char* selectBSA = "SELECT studentID, "
-                                        "testSub1, "
-                                        "testSub2, "
-                                        "testSub3 "
-                                        "FROM BSA;";
-                    sqlite3_stmt *selBSA;
-                    rc = sqlite3_prepare_v2(db, selectBSA, -1, &selBSA, nullptr);
-                    if (rc != SQLITE_OK)
-                    {
-                        cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
-                        sqlite3_finalize(selBSA);
-                        sqlite3_close(db);
-                    }
-                    while (sqlite3_step(selBSA) == SQLITE_ROW)
-                    {
-                        studentInfo studentt;
-                        studentt.acadPerformance.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSA, 0));
-                        studentt.acadPerformance.grades[0] = static_cast<float>((selBSA, 1));
-                        studentt.acadPerformance.grades[1] = static_cast<float>((selBSA, 2));
-                        studentt.acadPerformance.grades[2] = static_cast<float>((selBSA, 3));
-                        studInfo.push_back(studentt);
-                    }
-                    sqlite3_finalize(selBSA);
-                    sqlite3_close(db);
-            }
+            cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+            sqlite3_finalize(selBSIT);
+            sqlite3_close(db);
         }
+        while (sqlite3_step(selBSIT) == SQLITE_ROW)
+        {
+            studAcadPerf studentt;
+            studentt.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSIT, 0));
+            studentt.course = "Bachelor of Science in Information Technology";
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSIT, 1)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSIT, 2)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSIT, 3)));
+            studGrades.push_back(studentt);
+        }
+        sqlite3_finalize(selBSIT);
+
+        const char* selectBSBA = "SELECT studentID, "
+                    "testSub1, "
+                    "testSub2, "
+                    "testSub3 "
+                    "FROM BSBA;";
+        sqlite3_stmt *selBSBA;
+        rc = sqlite3_prepare_v2(db, selectBSBA, -1, &selBSBA, nullptr);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+            sqlite3_finalize(selBSBA);
+            sqlite3_close(db);
+        }
+        while (sqlite3_step(selBSBA) == SQLITE_ROW)
+        {
+            studAcadPerf studentt;
+            studentt.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSBA, 0));
+            studentt.course = "Bachelor of Science in Business Administration";
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSBA, 1)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSBA, 2)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSBA, 3)));
+            studGrades.push_back(studentt);
+        }
+        sqlite3_finalize(selBSBA);
+
+        const char* selectBSA = "SELECT studentID, "
+                    "testSub1, "
+                    "testSub2, "
+                    "testSub3 "
+                    "FROM BSA;";
+        sqlite3_stmt *selBSA;
+        rc = sqlite3_prepare_v2(db, selectBSA, -1, &selBSA, nullptr);
+        if (rc != SQLITE_OK)
+        {
+            cerr << "Error SELECT statement: " << sqlite3_errmsg(db) << endl;
+            sqlite3_finalize(selBSA);
+            sqlite3_close(db);
+        }
+        while (sqlite3_step(selBSA) == SQLITE_ROW)
+        {
+            studAcadPerf studentt;
+            studentt.studId = reinterpret_cast<const char*>(sqlite3_column_text(selBSA, 0));
+            studentt.course = "Bachelor of Science in Agriculture";
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSA, 1)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSA, 2)));
+            studentt.grades.push_back(static_cast<float>(sqlite3_column_double(selBSA, 3)));
+            studGrades.push_back(studentt);
+        }
+        sqlite3_finalize(selBSA);
         sqlite3_close(db);
     }
     public:
@@ -546,7 +535,7 @@ class processing{
             cout << "Address         :: " << studInfo[target].address << endl;
             cout << "Course Enrolled :: " << studInfo[target].courseEnrolled << endl;
         }
-
+        
         void stdRegNenroll(){
             int sel;
             bool loop = true;
@@ -633,6 +622,8 @@ class processing{
                         student.courseEnrolled = "Not Enrolled";
                     // push data to vector
                     studInfo.push_back(student);
+                    
+                    cout << studentNum - 1;
                     // to use studInfo[index].1ststruct.nestedstruct;
                     cout << "|-----------Student Registered-----------|\n";
                     printStudentInfo(studentNum - 1);
@@ -661,11 +652,15 @@ class processing{
                                     case 1:
                                         if (studCap != 0)
                                         {
+                                            studAcadPerf studentGrades;
                                             studCap[0]--;
                                             studInfo[i].courseEnrolled = "Bachelor of Science in Information Technology";
-                                            studInfo[i].acadPerformance.grades[0] = 0.00;
-                                            studInfo[i].acadPerformance.grades[1] = 0.00;
-                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            studentGrades.studId = studInfo[i].studentID;
+                                            studentGrades.course = "Bachelor of Science in Information Technology";
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studGrades.push_back(studentGrades);
                                             cout << "|----------------------------------------|\n";
                                             cout << "|---Student Officialy Enrolled on BSIT---|\n";
                                             cout << "|----------------------------------------|\n";
@@ -675,11 +670,15 @@ class processing{
                                     case 2:
                                         if (studCap != 0)
                                         {
+                                            studAcadPerf studentGrades;
                                             studCap[0]--;
                                             studInfo[i].courseEnrolled = "Bachelor of Science in Business Administration";
-                                            studInfo[i].acadPerformance.grades[0] = 0.00;
-                                            studInfo[i].acadPerformance.grades[1] = 0.00;
-                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            studentGrades.studId = studInfo[i].studentID;
+                                            studentGrades.course = "Bachelor of Science in Business Administration";
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studGrades.push_back(studentGrades);
                                             cout << "|----------------------------------------|\n";
                                             cout << "|---Student Officialy Enrolled on BSBA---|\n";
                                             cout << "|----------------------------------------|\n";
@@ -689,11 +688,15 @@ class processing{
                                     case 3:
                                         if (studCap != 0)
                                         {
+                                            studAcadPerf studentGrades;
                                             studCap[0]--;
                                             studInfo[i].courseEnrolled = "Bachelor of Science in Agriculture";
-                                            studInfo[i].acadPerformance.grades[0] = 0.00;
-                                            studInfo[i].acadPerformance.grades[1] = 0.00;
-                                            studInfo[i].acadPerformance.grades[2] = 0.00;
+                                            studentGrades.studId = studInfo[i].studentID;
+                                            studentGrades.course = "Bachelor of Science in Agriculture";
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studentGrades.grades.push_back(0.00);
+                                            studGrades.push_back(studentGrades);
                                             cout << "|----------------------------------------|\n";
                                             cout << "|----Student Officialy Enrolled on BSA---|\n";
                                             cout << "|----------------------------------------|\n";
@@ -919,9 +922,15 @@ class processing{
                             if (delet3 == 'Y' || delet3 == 'y')
                             {
                                 studInfo.erase(studInfo.begin() + i);
+                                for (int i = 0; i < studGrades.size(); i++)
+                                {
+                                    if (studGrades[i].studId == findID)
+                                    {
+                                        studGrades.erase(studGrades.begin() + i);
+                                    }
+                                }
                                 studentNum--;
                                 cout << "|-----Student Information Deleted!!!-----|\n";
-
                             }
                             else
                             {
@@ -940,18 +949,239 @@ class processing{
                 case 4:
                 loop = false;
                     break;
-                
                 default:
                 cout << "|-----------Invalid Selection!-----------|\n";
                     break;
                 }
             }
         }
-
         void mngGrades(){
-
+            string findID;
+            bool found = false;
+            cout << "|----------Manage Grades----------|\n";
+            cout << "Enter Student ID: ";
+            cin >> findID;
+            
+            for (int i = 0; i < studGrades.size(); i++)
+            {
+                if (studGrades[i].studId == findID)
+                {
+                    bool loop = true;
+                    while (loop)
+                    {
+                    found = true;
+                    int selection;
+                    cout << "|--------------------------------|\n";
+                    cout << "| Student ID: " << studGrades[i].studId << endl;
+                    cout << "| Course: " << studGrades[i].course << endl;
+                    cout << "|--------------------------------|\n\n";
+                    cout << "|--------Grade Management--------|\n";
+                    cout << "| 1. Add Grade                   |\n";
+                    cout << "| 2. Update Grade                |\n";
+                    cout << "| 3. Delete Grade                |\n";
+                    cout << "| 4. Back                        |\n";
+                    cout << "|--------------------------------|\n";
+                    cout << "Selection: ";
+                    cin >> selection;
+                    int subject;
+                    float grade;
+                    switch (selection)
+                    {
+                        case 1:
+                            if (studGrades[i].course == "Bachelor of Science in Information Technology")
+                            {
+                                cout << "| 1. CC101: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. CC102: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. GE6: " << studGrades[i].grades[2] << endl;
+                            }
+                            else if (studGrades[i].course == "Bachelor of Science in Business Administration")
+                            {
+                                cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                            }
+                            else if (studGrades[i].course == "Bachelor of Science in Agriculture")
+                            {
+                                cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                            }
+                                cout << "Enter the subject: ";
+                                cin >> subject;
+                                if (subject == 1) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[0] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } else if (subject == 2) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[1] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } else if (subject == 3) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[2] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } 
+                                else {
+                                    cout << "|-----------Invalid Subject!-----------|\n";
+                                    continue;
+                                }
+                                break;
+                            case 2:
+                                if (studGrades[i].course == "Bachelor of Science in Information Technology")
+                                {
+                                    cout << "| 1. CC101: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. CC102: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. GE6: " << studGrades[i].grades[2] << endl;
+                                }
+                                else if (studGrades[i].course == "Bachelor of Science in Business Administration")
+                                {
+                                    cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                                }
+                                else if (studGrades[i].course == "Bachelor of Science in Agriculture")
+                                {
+                                    cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                                }
+                            cout << "Enter the subject: ";
+                            cin >> subject;
+                                if (subject == 1) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[0] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } else if (subject == 2) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[1] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } else if (subject == 3) {
+                                    cout << "Enter the grade: ";
+                                    cin >> grade;
+                                    while (true)
+                                    {
+                                        if (grade >= 1.0 && grade <= 5.0) {
+                                            studGrades[i].grades[2] = grade;
+                                            break;
+                                        } else {
+                                            cout << "|-----------Invalid Grade!-----------|\n";
+                                            cout << "Enter the grade: ";
+                                            cin >> grade;
+                                        }
+                                    }
+                                    cout << "|-----------Grade Added!-----------|\n";
+                                } 
+                                else {
+                                    cout << "|---------Invalid Subject!---------|\n";
+                                    continue;
+                                }                            break;
+                        case 3:
+                            if (studGrades[i].course == "Bachelor of Science in Information Technology")
+                            {
+                                cout << "| 1. CC101: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. CC102: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. GE6: " << studGrades[i].grades[2] << endl;
+                            }
+                            else if (studGrades[i].course == "Bachelor of Science in Business Administration")
+                            {
+                                cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                            }
+                            else if (studGrades[i].course == "Bachelor of Science in Agriculture")
+                            {
+                                cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                            }
+                            cout << "Enter the subject: ";
+                            cin >> subject;
+                            if (subject == 1) {
+                                studGrades[i].grades[0] = 0;
+                                cout << "|-----------Grade Deleted!-----------|\n";
+                            } else if (subject == 2) {
+                                studGrades[i].grades[1] = 0;
+                                cout << "|-----------Grade Deleted!-----------|\n";
+                            } else if (subject == 3) {
+                                studGrades[i].grades[2] = 0;
+                                cout << "|-----------Grade Deleted!-----------|\n";
+                            } else {
+                                cout << "|----------Invalid Subject!----------|\n";
+                                continue;
+                            }
+                            break;
+                        case 4:
+                            loop = false;
+                            break;
+                        default:
+                            cout << "|-----------Invalid Selection!-----------|\n";
+                            break;
+                    }
+                    }
+                }
+            }
+            if (!found)
+            {
+            cout << "|----------------------------------------|\n";
+            cout << "|-----------Student Not Found!-----------|\n";
+            cout << "|----------------------------------------|\n";
+            }
         }
-
         void genReports(){
             int sel;
             bool loop = true;
@@ -965,43 +1195,141 @@ class processing{
                 cout << "|----------------------------------------|\n";
                 cout << "Selection: ";
                 cin >> sel;
-                switch (sel)
+                if (sel == 1)
                 {
-                case 1:
-                if (studInfo.size() <= 0)
+                    if (studInfo.size() <= 0)
+                    {
+                        cout << "|----------------------------------------|\n";
+                        cout << "|---------No Students Registered---------|\n";
+                        cout << "|----------------------------------------|\n";
+                    }
+                    else
+                    {
+                        cout << "|--------------Student List--------------|\n";
+                        for (int i = 0; i < studInfo.size(); i++)
+                        {
+                            cout << studInfo[i].studentID << " :: ";
+                            cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                        }
+                        cout << "|----------------------------------------|\n";                    
+                    }
+                }
+                else if (sel == 2)
                 {
-                cout << "|----------------------------------------|\n";
-                cout << "|---------No Students Registered---------|\n";
-                cout << "|----------------------------------------|\n";
+                    string findID;
+                    bool found = false;
+                    cout << "|--------Generate Course Schedule--------|\n";
+                    cout << "Enter Student ID: ";
+                    cin >> findID;
+                    for (int i = 0; i < studInfo.size(); i++)
+                    {
+                        if (studInfo[i].studentID == findID)
+                        {
+                            if (studInfo[i].courseEnrolled != "Not Enrolled")
+                            {
+                                found = true;
+                                string courseEnrolled = studInfo[i].courseEnrolled;
+                                cout << "|-----------Course Schedule-------------|\n";
+                                cout << "Student ID: " << findID << endl;
+                                cout << "Course Enrolled: " << courseEnrolled << endl;
+                                cout << "Schedule: ";
+                                if (courseEnrolled == "Bachelor of Science in Information Technology")
+                                {
+                                    cout << "          Monday 8:00 AM - 10:00 AM" << endl;
+                                    cout << "          Wednesday 10:00 AM - 12:00 PM" << endl;
+                                    cout << "          Friday 1:00 PM - 3:00 PM" << endl;
+                                }
+                                else if (courseEnrolled == "Bachelor of Science in Business Administration")
+                                {
+                                    cout << "          Tuesday 8:00 AM - 10:00 AM" << endl;
+                                    cout << "          Thursday 10:00 AM - 12:00 PM" << endl;
+                                    cout << "          Saturday 1:00 PM - 3:00 PM" << endl;
+                                }
+                                else if (courseEnrolled == "Bachelor of Science in Agriculture")
+                                {
+                                    cout << "          Monday 1:00 PM - 3:00 PM" << endl;
+                                    cout << "          Wednesday 3:00 PM - 5:00 PM" << endl;
+                                    cout << "          Friday 10:00 AM - 12:00 PM" << endl;
+                                }
+                                cout << "|---------------------------------------|\n";
+                            }
+                            else
+                            {
+                                cout << "|---------------------------------------|\n";
+                                cout << "|---------Student Not Enrolled!---------|\n";
+                                cout << "|---------------------------------------|\n";
+                            }
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        cout << "|---------------------------------------|\n";
+                        cout << "|-----------Student Not Found!----------|\n";
+                        cout << "|---------------------------------------|\n";
+                    }
+                }
+                else if (sel == 3)
+                {
+                    string findID;
+                    bool found = false;
+                    cout << "|--------Generate Academic Performance Report--------|\n";
+                    cout << "Enter Student ID: ";
+                    cin >> findID;
+                    for (int i = 0; i < studInfo.size(); i++)
+                    {
+                        if (studInfo[i].studentID == findID)
+                        {
+                            if (studInfo[i].courseEnrolled != "Not Enrolled")
+                            {
+                                found = true;
+                                string courseEnrolled = studInfo[i].courseEnrolled;
+                                cout << "|-----------Academic Performance Report-------------|\n";
+                                cout << "Student ID: " << findID << endl;
+                                cout << "Course Enrolled: " << courseEnrolled << endl;
+                                cout << "Grades: ";
+                                if (studGrades[i].course == "Bachelor of Science in Information Technology")
+                                {
+                                    cout << "| 1. CC101: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. CC102: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. GE6: " << studGrades[i].grades[2] << endl;
+                                }
+                                else if (studGrades[i].course == "Bachelor of Science in Business Administration")
+                                {
+                                    cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                                }
+                                else if (studGrades[i].course == "Bachelor of Science in Agriculture")
+                                {
+                                    cout << "| 1. Test Subject 1: " << studGrades[i].grades[0] << endl;
+                                    cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
+                                    cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
+                                }
+                            }
+                            else
+                            {
+                                cout << "|----------------------------------------|\n";
+                                cout << "|---------Student Not Enrolled!---------|\n";
+                                cout << "|----------------------------------------|\n";
+                            }
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        cout << "|----------------------------------------|\n";
+                        cout << "|-----------Student Not Found!-----------|\n";
+                        cout << "|----------------------------------------|\n";
+                    }
+                }
+                else if (sel == 4)
+                {
+                    break;
                 }
                 else
                 {
-                cout << "|--------------Student List--------------|\n";
-                    for (int i = 0; i < studInfo.size(); i++)
-                    {
-                        cout << studInfo[i].studentID << " :: ";
-                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
-                    }
-                cout << "|----------------------------------------|\n";                    
-                }
-                    break;
-                case 2:
-                /*
-                    for course schedule generation
-                    Will integrate Google Gemini API if I can learn it
-                    Google Gemini API is free so, will take advantage of that
-                */
-                    break;
-                case 3:
-
-                    break;
-                case 4:
-                loop = false;
-                    break;
-                
-                default:
-                cout << "|-----------Invalid Selection!-----------|\n";
-                    break;
+                    cout << "|-----------Invalid Selection!-----------|\n";
                 }
             }
         }
@@ -1038,7 +1366,6 @@ int main()
         accessDbase.runPullGrades();
     }
     studentNum = accessDbase.runGetStudentCount("studentNumbers");
-    cout << studentNum << accessDbase.runGetStudentCount("totalEnrolled");
     bool loop = true;
     while (loop)
     {
