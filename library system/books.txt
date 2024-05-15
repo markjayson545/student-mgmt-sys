@@ -1,0 +1,10 @@
+Book Name: tes
+Book ID: tes
+Author: tes
+Publisher: est
+Available: No
+Borrowed By: No
+Day Borrowed: 15
+Month Borrowed: 5
+Year Borrowed: 2024
+

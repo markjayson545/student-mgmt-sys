@@ -1,0 +1,30 @@
+Welcome to City Library System
+Menu:
+1. user registration
+    1. Enter Username
+    2. Enter Password
+2. User login
+    1. Borrow book
+        Enter Book ID
+    2. Return book
+        Enter Book ID
+    3. Search book
+        Enter Book Name
+    5. View all books
+        print all books
+    6. View all available books
+        print all available books
+3. Admin login
+    1. Add book
+        Enter Book Name
+        Enter Book ID
+        Enter Author Name
+        Enter Publisher Name
+    2. Remove book
+        Enter Book ID
+    3. View all books
+        print all books
+    4. View all available books
+        print all available books
+    5. View all borrowed books
+        print all borrowed books with user name

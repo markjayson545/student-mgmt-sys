@@ -884,11 +884,9 @@ class processing{
                                     cout << "|------Address Changed Successfully------|\n";
                                     break;
                                 case 7:
-                                    //need course shifting algorithm
-                                    //change subjects and drop subject
                                     cout << "|---------Change Course Enrolled---------|\n";
                                     cout << "Course Enrolled: ";
-                                    cin >> studInfo[i].courseEnrolled;
+                                    
                                     cout << "|--Course Enrolled Changed Successfully--|\n";
                                     break;
                                 case 8:
@@ -1398,7 +1396,7 @@ int main()
             else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
             {
                 cout << "|---Username and Password did not match--|\n";
-            }           
+            }
                 break;
             case 3:
             cout << "|--------Admin Previlage Required--------|\n";
