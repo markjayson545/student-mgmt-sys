@@ -164,7 +164,7 @@ void registerUser() {
         cout << "|==================================================|" << endl;
         cout << "|=============== User Registration ================|" << endl;
         cout << "|==================================================|" << endl;
-        cout << "Enter Username: ";
+        cout << "| Enter Username: ";
         cin >> user.username;
         for (int i = 0; i < users.size(); i++)
         {
@@ -247,6 +247,7 @@ void borrowBook(string borrower) {
 }
 
 void printOverdueBooks(){
+    bool found = false;
     cout << "|================== Overdue Books =================|" << endl;
     for (int i = 0; i < books.size(); i++){
         if (!books[i].available && 
@@ -254,6 +255,7 @@ void printOverdueBooks(){
             month != books[i].dateBorrowed.month ||
             year != books[i].dateBorrowed.year)
         {
+            found = true;
             cout << "| Book Name: " << books[i].name << endl;
             cout << "| Book ID: " << books[i].id << endl;
             cout << "| Author: " << books[i].author << endl;
@@ -263,6 +265,9 @@ void printOverdueBooks(){
             cout << "|==================================================|" << endl;
             cout << endl;
         }
+    }
+    if (!found) {
+        cout << "|=============== No overdue books! =================|" << endl;
     }
 }
 
@@ -330,10 +335,12 @@ void viewAllBooks() {
 }
 
 void viewAllAvailableBooks() {
+    bool found = false;
             cout << endl;
             cout << "|============== Available Books ===================|" << endl;
     for (const auto& book : books) {
         if (book.available) {
+            found = true;
             cout << "| Book Name: " << book.name << endl;
             cout << "| Book ID: " << book.id << endl;
             cout << "| Author: " << book.author << endl;
@@ -342,6 +349,9 @@ void viewAllAvailableBooks() {
             cout << "|==================================================|" << endl;
             cout << endl;
         }
+    }
+    if (!found) {
+        cout << "|=============== No books available ===============|" << endl;
     }
 }
 
@@ -353,6 +363,14 @@ void addBook() {
     getline(cin, book.name);
     cout << "| Enter Book ID: ";
     cin >> book.id;
+    for (int i = 0; i < books.size(); i++) {
+        if (books[i].id == book.id) {
+            cout << "|==================================================|" << endl;
+            cout << "|================ Book ID exists! =================|" << endl;
+            cout << "|==================================================|" << endl;
+            return;
+        }
+    }
     cout << "| Enter Author Name: ";
     cin.ignore();
     getline(cin, book.author);
@@ -360,6 +378,9 @@ void addBook() {
     cin.ignore();
     getline(cin, book.publisher);
     book.available = true;
+    book.dateBorrowed.day = 0;
+    book.dateBorrowed.month = 0;
+    book.dateBorrowed.year = 0;
     books.push_back(book);
     cout << "|============ Book added successfully! ============|" << endl;
 }
@@ -482,7 +503,7 @@ int main() {
                         }
                     }
                     else
-                    {
+                    {   
                         cout << "|==================================================|" << endl;
                         cout << "|===========Invalid username or password===========|" << endl;
                         cout << "|==================================================|" << endl;
@@ -503,14 +524,15 @@ int main() {
                     bool adminLoop = true;
                     while (adminLoop) 
                     {
-                        cout << "Admin Menu:" << endl;
-                        cout << "1. Add Book" << endl;
-                        cout << "2. Remove Book" << endl;
-                        cout << "3. View All Books" << endl;
-                        cout << "4. View All Available Books" << endl;
-                        cout << "5. View All Borrowed Books" << endl;
-                        cout << "6. Print Overdue Books" << endl;
-                        cout << "7. Back" << endl;
+                        cout << "|=================== Admin Menu ===================|" << endl;
+                        cout << "| 1. Add Book                                      |" << endl;
+                        cout << "| 2. Remove Book                                   |" << endl;
+                        cout << "| 3. View All Books                                |" << endl;
+                        cout << "| 4. View All Available Books                      |" << endl;
+                        cout << "| 5. View All Borrowed Books                       |" << endl;
+                        cout << "| 6. View All Overdue Books                        |" << endl;
+                        cout << "| 7. Back                                          |" << endl;
+                        cout << "|==================================================|" << endl;
                         cout << "Enter your choice: ";
                         cin >> choice;
                         switch (choice) 
@@ -537,14 +559,18 @@ int main() {
                                 adminLoop = false;
                                 break;
                             default:
-                                cout << "Invalid choice!" << endl;
+                                cout << "|==================================================|" << endl;
+                                cout << "|================= Invalid choice =================|" << endl;
+                                cout << "|==================================================|" << endl;
                                 break;
                         }
                     }
                 } 
                 else 
                 {
-                    cout << "Invalid username or password!" << endl;
+                    cout << "|==================================================|" << endl;
+                    cout << "|========== Invalid username or password ==========|" << endl;
+                    cout << "|==================================================|" << endl;
                     continue;
                 }
             }
@@ -554,7 +580,9 @@ int main() {
             } 
             else 
             {
-                cout << "Invalid choice!" << endl;
+                cout << "|==================================================|" << endl;
+                cout << "|================= Invalid choice =================|" << endl;
+                cout << "|==================================================|" << endl;
             }
     }
     pushBooksToTxt();

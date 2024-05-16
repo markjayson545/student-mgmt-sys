@@ -11,16 +11,8 @@
                 "-l",
                 "sqlite3",
                 "-o",
-                "${fileDirname}\\${fileName}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            },
             "options": {
                 "cwd": "${fileDirname}"
             },

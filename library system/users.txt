@@ -1,2 +1,2 @@
-Username: adm
-Password: adam
+Username: user
+Password: user
