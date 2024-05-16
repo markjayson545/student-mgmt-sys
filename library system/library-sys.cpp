@@ -138,59 +138,74 @@ void pullBooksFromTxt()
 }
 
 bool adminLogon(string username, string password){
+    system("cls");
     string adminUsername = "admin";
     string adminPassword = "admin";
     if(username == adminUsername && password == adminPassword){
         cout << "|==================================================|" << endl;
         cout << "|================ Login successful ================|" << endl;
         cout << "|==================================================|" << endl;
+        system("pause");
+        system("cls");
         return true;
     }
         cout << "|==================================================|" << endl;
         cout << "|========== Invalid username or password ==========|" << endl;
         cout << "|==================================================|" << endl;
+        system("pause");
+        system("cls");
         return false;
 }
 
 void registerUser() {
     User user;
+    system("cls");
     bool reg = true;
     while (reg)
     {
         if (users.empty()) {
             reg = false;
         }
-        cout << endl;
         cout << "|==================================================|" << endl;
         cout << "|=============== User Registration ================|" << endl;
-        cout << "|==================================================|" << endl;
-        cout << "| Enter Username: ";
-        cin >> user.username;
-        for (int i = 0; i < users.size(); i++)
+        while (true)
         {
-            if (users[i].username == user.username)
+            cout << "|==================================================|" << endl;
+            cout << "| Enter Username: ";
+            cin >> user.username;
+            bool usernameAvailable = true;
+            for (int i = 0; i < users.size(); i++)
             {
-                cout << "|==================================================|" << endl;
-                cout << "|============= Username not available =============|" << endl;
-                cout << "|==================================================|" << endl;
+                if (users[i].username == user.username)
+                {
+                    cout << "|==================================================|" << endl;
+                    cout << "|============= Username not available =============|" << endl;
+                    cout << "|==================================================|" << endl;
+                    system("pause");
+                    system("cls");
+                    usernameAvailable = false;
+                    break;
+                }
             }
-            else if (users[i].username != user.username)
-            {
-                reg = false;
+            if (usernameAvailable) {
+                break;
             }
         }
+        cout << "| Enter Password: ";
+        cin >> user.password;
+        users.push_back(user);
+        cout << "|==================================================|" << endl;
+        cout << "|========== User registered successfully ==========|" << endl;
+        cout << "|==================================================|" << endl;
+        cout << endl;
+        system("pause");
+        system("cls");
     }
-    cout << "| Enter Password: ";
-    cin >> user.password;
-    users.push_back(user);
-    cout << "|==================================================|" << endl;
-    cout << "|========== User registered successfully ==========|" << endl;
-    cout << "|==================================================|" << endl;
-    cout << endl;
 }
 
 bool loginUser(string username, string password) {
     bool found = false;
+    system("cls");
     for (int i = 0; i < users.size(); i++)
     {
         if (users[i].username == username && users[i].password == password) 
@@ -201,26 +216,27 @@ bool loginUser(string username, string password) {
     }
     if (found) 
     {
-        cout << endl;
         cout << "|==================================================|" << endl;
         cout << "|================ Login successful ================|" << endl;
         cout << "|==================================================|" << endl;
-        cout << endl;
+        system("pause");
+        system("cls");
         return true;
     } 
     else 
     {
-        cout << endl;
         cout << "|==================================================|" << endl;
         cout << "|========== Invalid username or password ==========|" << endl;
         cout << "|==================================================|" << endl;
-        cout << endl;
+        system("pause");
+        system("cls");
         return false;
     }
 }
 
 void borrowBook(string borrower) {
     string bookId;
+    system("cls");
     cout << "|================ Borrow a Book ===================|" << endl;
     cout << "| Enter Book ID: ";
     cin >> bookId;
@@ -244,16 +260,19 @@ void borrowBook(string borrower) {
         cout << "|======== Book not found or not available! ========|" << endl;
         cout << "|==================================================|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void printOverdueBooks(){
     bool found = false;
+    system("cls");
     cout << "|================== Overdue Books =================|" << endl;
     for (int i = 0; i < books.size(); i++){
-        if (!books[i].available && 
-            (day - books[i].dateBorrowed.day) > 7 || 
+        if ((!books[i].available && 
+            (day - books[i].dateBorrowed.day) > 7) && ( 
             month != books[i].dateBorrowed.month ||
-            year != books[i].dateBorrowed.year)
+            year != books[i].dateBorrowed.year))
         {
             found = true;
             cout << "| Book Name: " << books[i].name << endl;
@@ -269,10 +288,13 @@ void printOverdueBooks(){
     if (!found) {
         cout << "|=============== No overdue books! =================|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void returnBook() {
     string bookId;
+    system("cls");
     cout << "|================ Return a Book ===================|" << endl;
     cout << "| Enter Book ID: ";
     cin >> bookId;
@@ -293,10 +315,13 @@ void returnBook() {
         cout << "|======= Book not found or already returned =======|" << endl;
         cout << "|==================================================|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void searchBook() {
     string bookName;
+    system("cls");
     cout << "|================ Search a Book ===================|" << endl;
     cout << "| Enter Book Name: ";
     cin.ignore();
@@ -319,9 +344,12 @@ void searchBook() {
         cout << "|================= Book not found =================|" << endl;
         cout << "|==================================================|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void viewAllBooks() {
+    system("cls");
         cout << "|================ All Books =======================|" << endl;
     for (const auto& book : books) {
         cout << "| Book Name: " << book.name << endl;
@@ -332,11 +360,13 @@ void viewAllBooks() {
         cout << "|==================================================|" << endl;
         cout << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void viewAllAvailableBooks() {
     bool found = false;
-            cout << endl;
+    system("cls");
             cout << "|============== Available Books ===================|" << endl;
     for (const auto& book : books) {
         if (book.available) {
@@ -353,10 +383,13 @@ void viewAllAvailableBooks() {
     if (!found) {
         cout << "|=============== No books available ===============|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void addBook() {
     Book book;
+    system("cls");
     cout << "|================ Add a Book =====================|" << endl;
     cout << "| Enter Book Name: ";
     cin.ignore();
@@ -368,6 +401,8 @@ void addBook() {
             cout << "|==================================================|" << endl;
             cout << "|================ Book ID exists! =================|" << endl;
             cout << "|==================================================|" << endl;
+            system("pause");
+            system("cls");
             return;
         }
     }
@@ -383,10 +418,13 @@ void addBook() {
     book.dateBorrowed.year = 0;
     books.push_back(book);
     cout << "|============ Book added successfully! ============|" << endl;
+    system("pause");
+    system("cls");
 }
 
 void removeBook() {
     string bookId;
+    system("cls");
     cout << "|================ Remove a Book ==================|" << endl;
     cout << "| Enter Book ID: ";
     cin >> bookId;
@@ -404,10 +442,13 @@ void removeBook() {
         cout << "|================= Book not found =================|" << endl;
         cout << "|==================================================|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 void viewAllBorrowedBooks() {
     bool found = false;
+    system("cls");
     cout << "|============== Borrowed Books ===================|" << endl;
     for (int i = 0; i < books.size(); i++) {
         if (!books[i].available) {
@@ -424,8 +465,10 @@ void viewAllBorrowedBooks() {
         }
     }
     if (!found) {
-        cout << "|=============== No books borrowed! ===============|" << endl;
+        cout << "|=============== No books borrowed ===============|" << endl;
     }
+    system("pause");
+    system("cls");
 }
 
 int main() {
@@ -435,7 +478,6 @@ int main() {
     bool loop = true;
     cout << "|==================================================|" << endl;
     cout << "|=========== Welcome to Library System! ===========|" << endl;
-    cout << "|==================================================|" << endl;
     while (loop) 
     {
         cout << "|====================== Menu ======================|" << endl;
@@ -446,6 +488,7 @@ int main() {
         cout << "|==================================================|" << endl;
         cout << "| Enter your choice: ";
         cin >> choice;
+        system("cls");
         if (choice == 1) 
         {
             registerUser();
@@ -456,6 +499,7 @@ int main() {
                 while (loginLoop)
                 {
                     string username, password;
+                    cout << "|=================== UserLogin ====================|" << endl;
                     cout << "| Enter Username: ";
                     cin >> username;
                     cout << "| Enter Password: ";
@@ -493,6 +537,7 @@ int main() {
                                 case 6:
                                     userLoop = false;
                                     loginLoop = false;
+                                    system("cls");
                                     break;
                                 default:
                                     cout << "|==================================================|" << endl;
@@ -501,12 +546,6 @@ int main() {
                                     break;
                             }
                         }
-                    }
-                    else
-                    {   
-                        cout << "|==================================================|" << endl;
-                        cout << "|===========Invalid username or password===========|" << endl;
-                        cout << "|==================================================|" << endl;
                     }
                 }
             } 
@@ -524,6 +563,7 @@ int main() {
                     bool adminLoop = true;
                     while (adminLoop) 
                     {
+                        system("cls");
                         cout << "|=================== Admin Menu ===================|" << endl;
                         cout << "| 1. Add Book                                      |" << endl;
                         cout << "| 2. Remove Book                                   |" << endl;
@@ -556,6 +596,7 @@ int main() {
                                 printOverdueBooks();
                                 break;
                             case 7:
+                                system("cls");
                                 adminLoop = false;
                                 break;
                             default:
