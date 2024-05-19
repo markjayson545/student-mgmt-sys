@@ -2056,6 +2056,7 @@ class processing: public login{
 int main()
 {
     processing process;
+    // dBaseAccess/txtBaseAccess to change database type
     dBaseAccess accessDbase;
     login loginInfo;
     accessDbase.initialize();
