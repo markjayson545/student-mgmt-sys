@@ -16,7 +16,7 @@
     B. Enroll Student in Course
         a. Select Course
         b. Confirm Enrollment
-    C. Drop Course
+    C. Drop Course  
         a. Select Course
         b. Confirm Course Drop
 3. Manage Student Performance

@@ -3,9 +3,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <sqlite3.h>
+#include <conio.h>
+#include <limits>
 using namespace std;
-
 //get time
 time_t t = time(nullptr);
 tm *const pTInfo = localtime(&t);
@@ -23,11 +25,8 @@ struct dateOfBirth
     {
         int month, day, year;
     }; 
-    
 int studentNum = 0;
 int studentEnrolled = 0;
-// store studentNum in a file
-// create vector of courses with corresponding capacity limit and sections
 struct studentInfo
 {
     name fullName;
@@ -36,10 +35,90 @@ struct studentInfo
     string studentID, email, address, courseEnrolled;
     long long int phoneNumber;
 };
-
 vector <studentInfo> studInfo;
 vector <studAcadPerf> studGrades;
 int studCap[3] = {30, 30, 30};
+
+int errorInputHandlingInt(){
+    int input;
+    bool validType = false;
+    while (!validType){
+        cin >> input;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\n|-----------Invalid Selection!-----------|\n";
+            cout << "| Selection: ";
+        }
+        else
+        {
+            validType = true;
+        }
+    }
+    return input;
+}
+
+long long int errorInputHandlingLong(){
+    long long int input;
+    bool validType = false;
+    while (!validType){
+        cin >> input;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\n|-----------Invalid Selection!-----------|\n";
+            cout << "| Selection: ";
+        }
+        else
+        {
+            validType = true;
+        }
+    }
+    return input;
+}
+
+float errorInputHandlingFloat(){
+    float input;
+    bool validType = false;
+    while (!validType){
+        cin >> input;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\n|-----------Invalid Selection!-----------|\n";
+            cout << "| Selection: ";
+        }
+        else
+        {
+            validType = true;
+        }
+    }
+    return input;
+}
+
+char errorInputHandlingChar(){
+    char input;
+    bool validType = false;
+    while (!validType){
+        cin >> input;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\n|-----------Invalid Selection!-----------|\n";
+            cout << "| Selection: ";
+        }
+        else
+        {
+            validType = true;
+        }
+    }
+    return input;
+}
+
 class login
 {
     private: 
@@ -52,6 +131,273 @@ class login
         string getPassword(){
             return password;
         }
+};
+
+class txtBaseAccess{
+    private:
+    void pushStudInfoToTxt() {
+        ofstream studInfoTxt("Student Information.txt");
+        if (studInfoTxt.is_open())
+        {
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                studInfoTxt << "Last Name: " << studInfo[i].fullName.lastName << endl;
+                studInfoTxt << "First Name: " << studInfo[i].fullName.firstName << endl;
+                studInfoTxt << "Middle Name: " << studInfo[i].fullName.middleName << endl;
+                studInfoTxt << "BirthMonth: " << studInfo[i].birthDate.month << endl;
+                studInfoTxt << "BirthDay: " << studInfo[i].birthDate.day << endl;
+                studInfoTxt << "BirthYear: " << studInfo[i].birthDate.year << endl;
+                studInfoTxt << "Sex: " << studInfo[i].sex << endl;
+                studInfoTxt << "Phone Number: " << studInfo[i].phoneNumber << endl;
+                studInfoTxt << "Email: " << studInfo[i].email << endl;
+                studInfoTxt << "Address: " << studInfo[i].address << endl;
+                studInfoTxt << "Course Enrolled: " << studInfo[i].courseEnrolled << endl;
+                studInfoTxt << "Student ID: " << studInfo[i].studentID << endl;
+                studInfoTxt << endl;
+            }
+            studInfoTxt.close();
+        }
+        else
+        {
+            cout << "|------Error Opening Student Information File------|\n";
+        }
+    }
+    void pullStudInfoToTxt() {
+        ifstream studInfoTxt("Student Information.txt");
+        if (studInfoTxt.is_open())
+        {
+            string line;
+            while (getline(studInfoTxt, line))
+            {
+                if (!line.empty())
+                {
+                    studentInfo student;
+                    student.fullName.lastName =  line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.fullName.firstName =  line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.fullName.middleName =  line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.birthDate.month = stoi(line.substr(line.find(":") + 2));
+                    getline(studInfoTxt, line);
+                    student.birthDate.day = stoi(line.substr(line.find(":") + 2));
+                    getline(studInfoTxt, line);
+                    student.birthDate.year = stoi(line.substr(line.find(":") + 2));
+                    getline(studInfoTxt, line);
+                    student.sex = line.substr(line.find(":") + 2)[0];
+                    getline(studInfoTxt, line);
+                    student.phoneNumber = stoll(line.substr(line.find(":") + 2));
+                    getline(studInfoTxt, line);
+                    student.email = line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.address = line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.courseEnrolled = line.substr(line.find(":") + 2);
+                    getline(studInfoTxt, line);
+                    student.studentID = line.substr(line.find(":") + 2);
+                    studInfo.push_back(student);
+                }
+            }
+            studInfoTxt.close();
+        }
+        else{
+            cout << "|------Error Opening Student Information File------|\n";
+        }
+    }
+    void pushStudGradesToTxt() {
+        ofstream studGradesTxt("Student Grades.txt");
+        if (studGradesTxt.is_open())
+        {
+            for (int i = 0; i < studGrades.size(); i++)
+            {
+                studGradesTxt << "Student ID: " << studGrades[i].studId << endl;
+                studGradesTxt << "Course: " << studGrades[i].course << endl;
+                    for (int i = 0; i < studGrades.size(); i++)
+                    {
+                        if(studGrades[i].course == "Bachelor of Science in Information Technology")
+                        {
+                            studGradesTxt << "CC101: " << studGrades[i].grades[0] << endl;
+                            studGradesTxt << "CC102: " << studGrades[i].grades[1] << endl;
+                            studGradesTxt << "GE6: " << studGrades[i].grades[2] << endl;
+                        }
+                        else if(studGrades[i].course == "Bachelor of Science in Business Administration")
+                        {
+                            studGradesTxt << "Test Subject 1: " << studGrades[i].grades[0] << endl;
+                            studGradesTxt << "Test Subject 2: " << studGrades[i].grades[1] << endl;
+                            studGradesTxt << "Test Subject 3: " << studGrades[i].grades[2] << endl;
+                        }
+                        else if(studGrades[i].course == "Bachelor of Science in Agriculture")
+                        {
+                            studGradesTxt << "Test Subject 1: " << studGrades[i].grades[0] << endl;
+                            studGradesTxt << "Test Subject 2: " << studGrades[i].grades[1] << endl;
+                            studGradesTxt << "Test Subject 3: " << studGrades[i].grades[2] << endl;
+                        }
+                    }
+            }
+            studGradesTxt.close();
+        }
+        else
+        {
+            cout << "|------Error Opening Student Grades File------|\n";
+        }
+    }
+    void pullStudGradesToTxt() {
+        ifstream studGradesTxt("Student Grades.txt");
+        if (studGradesTxt.is_open())
+        {
+            string line;
+            while (getline(studGradesTxt, line))
+            {
+                if (!line.empty())
+                {
+                    studAcadPerf student;
+                    student.studId = line.substr(line.find(":") + 2);
+                    getline(studGradesTxt, line);
+                    student.course = line.substr(line.find(":") + 2);
+                    if (student.course == "Bachelor of Science in Information Technology")
+                    {
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                    }
+                    else if (student.course == "Bachelor of Science in Business Administration")
+                    {
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                    }
+                    else if (student.course == "Bachelor of Science in Agriculture")
+                    {
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                        getline(studGradesTxt, line);
+                        student.grades.push_back(stof(line.substr(line.find(":") + 2)));
+                    }
+                    studGrades.push_back(student);
+                }
+            }
+            studGradesTxt.close();
+        }
+        else
+        {
+            cout << "|------Error Opening Student Grades File------|\n";
+        }
+    }
+    int getStudentCount(string what){
+        if (what == "studentNumbers")
+        {
+            return studInfo.size();
+        }
+        else if (what == "BSITenrolled")
+        {
+            int count = 0;
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        else if (what == "BSBAenrolled")
+        {
+            int count = 0;
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        else if (what == "BSAenrolled")
+        {
+            int count = 0;
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        else if(what == "notEnrolled"){
+            int count = 0;
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                if (studInfo[i].courseEnrolled == "Not Enrolled")
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        else if (what == "totalEnrolled")
+        {
+            int count = 0;
+            for (int i = 0; i < studInfo.size(); i++)
+            {
+                if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology" ||
+                    studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration" ||
+                    studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        return 0;
+    }
+    public:
+    void initialize(){
+        ifstream openStudInfo("Student Information.txt");
+        if (openStudInfo) {
+            openStudInfo.close();
+            pullStudInfoToTxt();
+        } else {
+            ofstream createStudInfo("Student Information.txt");
+            createStudInfo.close();
+        }
+        ifstream openStudGrades("Student Grades.txt");
+        if (openStudGrades) {
+            openStudGrades.close();
+            pullStudGradesToTxt();
+        } else {
+            ofstream createStudGrades("Student Grades.txt");
+            createStudGrades.close();
+        }
+        studentNum = getStudentCount("studentNumbers");
+        studentEnrolled = getStudentCount("totalEnrolled");
+        studCap[0] -= getStudentCount("BSITenrolled");
+        studCap[1] -= getStudentCount("BSBAenrolled");
+        studCap[2] -= getStudentCount("BSAenrolled");
+    }
+    void finalize(){
+        if (studInfo.size() > 0)
+        {
+            remove("Student Information.txt");
+            pushStudInfoToTxt();
+        }
+        if (getStudentCount("totalEnrolled") > 0)
+        {
+            remove("Student Grades.txt");
+            pushStudGradesToTxt();
+        }
+    }
+    int runGetStudentCount(string what){
+        return getStudentCount(what);
+    }
 };
 class dBaseAccess{
     private:
@@ -500,42 +846,49 @@ class dBaseAccess{
         }
         sqlite3_finalize(selBSA);
         sqlite3_close(db);
-    }
+    }    
     public:
-    void runCreateDB(){
+    void initialize(){
         createDB();
         createGradingSheets();
-    }
-    void runPush2DB(){
-        push2Dbase();
-    }
-    void runPullFDbase(){
         pullFDbase();
+        studCap[0] -= getStudentCount("BSITenrolled");
+        studCap[1] -= getStudentCount("BSBAenrolled");
+        studCap[2] -= getStudentCount("BSAenrolled");
+        studentEnrolled = getStudentCount("totalEnrolled");
+        if (studentEnrolled > 0)
+        {
+            pullGrades();
+        }
+        studentNum = getStudentCount("studentNumbers");
+    }
+    void finalize(){
+        remove("Student Information.db");
+        createDB();
+        createGradingSheets();
+        push2Dbase();
+        if (getStudentCount("totalEnrolled") > 0 || studentEnrolled > 0)
+        {
+            pushGrades();
+        }    
     }
     int runGetStudentCount(string what){
         return getStudentCount(what);
     }
-    void runPushGrades(){
-        pushGrades();
-    }
-    void runPullGrades(){
-        pullGrades();
-    }
 };
 
-class processing{
+class processing: public login{
     private:
         void printStudentInfo(int target){
-            cout << "Student ID      :: " << studInfo[target].studentID << endl;
-            cout << "Full Name       :: " << studInfo[target].fullName.lastName << ", " << studInfo[target].fullName.firstName << ' ' << studInfo[target].fullName.middleName << endl;
-            cout << "Sex             :: " << studInfo[target].sex << endl;
-            cout << "Date of Birth   :: " << studInfo[target].birthDate.month << '/' << studInfo[target].birthDate.day << '/' << studInfo[target].birthDate.year << endl;
-            cout << "Phone Number    :: " << studInfo[target].phoneNumber << endl;
-            cout << "Email           :: " << studInfo[target].email << endl;
-            cout << "Address         :: " << studInfo[target].address << endl;
-            cout << "Course Enrolled :: " << studInfo[target].courseEnrolled << endl;
+            cout << " Student ID      :: " << studInfo[target].studentID << endl;
+            cout << " Full Name       :: " << studInfo[target].fullName.lastName << ", " << studInfo[target].fullName.firstName << ' ' << studInfo[target].fullName.middleName << endl;
+            cout << " Sex             :: " << studInfo[target].sex << endl;
+            cout << " Date of Birth   :: " << studInfo[target].birthDate.month << '/' << studInfo[target].birthDate.day << '/' << studInfo[target].birthDate.year << endl;
+            cout << " Phone Number    :: " << studInfo[target].phoneNumber << endl;
+            cout << " Email           :: " << studInfo[target].email << endl;
+            cout << " Address         :: " << studInfo[target].address << endl;
+            cout << " Course Enrolled :: " << studInfo[target].courseEnrolled << endl;
         }
-        
         void stdRegNenroll(){
             int sel;
             bool loop = true;
@@ -544,31 +897,33 @@ class processing{
                 string findStudID;
                 bool find;
                 studentInfo student;
+                system("cls");
                 cout << "|----Student Registration & Enrollment---|\n";
                 cout << "| 1. Register New Student                |\n";
                 cout << "| 2. Enroll Student in Course            |\n";
                 cout << "| 3. Drop Course                         |\n";
                 cout << "| 4. Back                                |\n";
                 cout << "|----------------------------------------|\n";
-                cout << "Selection: ";
-                cin >> sel;
+                cout << "| Selection: ";
+                sel = errorInputHandlingInt();
                 switch (sel)
                 {
                 case 1:
+                system("cls");
                     cout << "|----------Register New Student----------|\n";
                     // get full name
-                    cout << "Enter Last Name: ";
+                    cout << "| Enter Last Name: ";
                     cin.ignore(); //ignore the line above
                     getline(cin, student.fullName.lastName);
-                    cout << "Enter First Name: ";
+                    cout << "| Enter First Name: ";
                     getline(cin, student.fullName.firstName);
-                    cout << "Enter Middle Name: ";
+                    cout << "| Enter Middle Name: ";
                     getline(cin, student.fullName.middleName);
                         //get sex orientation and retyrn if invalid
                         do
                         {
-                            cout << "Enter Sex (M/F): ";
-                            cin >> student.sex; 
+                            cout << "| Enter Sex (M/F): ";
+                            student.sex = errorInputHandlingChar(); 
                                 if (student.sex == 'm')
                                 {
                                     student.sex = 'M';
@@ -585,8 +940,8 @@ class processing{
                         // get birthdate and return if invalid
                         do
                         {
-                            cout << "Enter Birthdate:" << endl << "Month (1-12): ";
-                            cin >> student.birthDate.month;
+                            cout << "| Enter Birthdate:" << endl << "| Month (1-12): ";
+                            student.birthDate.month = errorInputHandlingInt();
                                 if (student.birthDate.month > 12 || student.birthDate.month <= 0)
                                 {
                                         cout << "|-------------Invalid Input!-------------|\n";
@@ -594,8 +949,8 @@ class processing{
                         } while (student.birthDate.month > 12 || student.birthDate.month <= 0);
                         do
                         {
-                            cout << "Day (1-31): ";
-                            cin >> student.birthDate.day;
+                            cout << "| Day (1-31): ";
+                            student.birthDate.day = errorInputHandlingInt();
                                 if (student.birthDate.day > 31 || student.birthDate.day <= 0)
                                 {
                                         cout << "|-------------Invalid Input!-------------|\n";
@@ -603,37 +958,48 @@ class processing{
                         } while (student.birthDate.day > 31 || student.birthDate.day <= 0);
                         do
                         {
-                            cout << "Year (~2024): ";
-                            cin >> student.birthDate.year;
+                            cout << "| Year (~2024): ";
+                            student.birthDate.year = errorInputHandlingInt();
                                 if (student.birthDate.year <= 1900 || student.birthDate.year <= 1900 || student.birthDate.day <= 0)
                                 {
                                         cout << "|-------------Invalid Input!-------------|\n";
                                 }
                         } while (student.birthDate.year > 2024 || student.birthDate.year <= 1900 || student.birthDate.day <= 0);
-                        cout << "Enter Phone Number: ";
-                        cin >> student.phoneNumber;
-                        cout << "Enter Email Address: ";
-                        cin >> student.email;
+                        cout << "| Enter Phone Number: ";
+                        student.phoneNumber = errorInputHandlingLong();
+                        cout << "| Enter Email Address: ";
+                        cin.ignore();
+                        getline(cin, student.email);
+                        cout << "| Enter Address: ";
                         cin.ignore(); // ignore above nanaman
-                        cout << "Enter Address: ";
                         getline(cin, student.address);
                         studentNum++;
-                        student.studentID = to_string(year) + "-SC-" + to_string(studentNum);
+                        if (studentNum > 1) {
+                            string previousStudentID = studInfo[studentNum - 2].studentID;
+                            int lastDashIndex = previousStudentID.find_last_of("-");
+                            string previousNumber = previousStudentID.substr(lastDashIndex + 1);
+                            int nextNumber = stoi(previousNumber) + 1;
+                            student.studentID = previousStudentID.substr(0, lastDashIndex + 1) + to_string(nextNumber);
+                        } else {
+                            student.studentID = to_string(year) + "-SC-" + to_string(studentNum);
+                        }
                         student.courseEnrolled = "Not Enrolled";
-                    // push data to vector
-                    studInfo.push_back(student);
-                    
-                    cout << studentNum - 1;
-                    // to use studInfo[index].1ststruct.nestedstruct;
-                    cout << "|-----------Student Registered-----------|\n";
-                    printStudentInfo(studentNum - 1);
+                        // push data to vector
+                        studInfo.push_back(student);
+                        // to use studInfo[index].1ststruct.nestedstruct;
+                        system("cls");
+                        cout << "|-----------Student Registered-----------|\n";
+                        printStudentInfo(studentNum - 1);
                     cout << "|----------------------------------------|\n";
+                    system("pause");
+                    system("cls");
                     break;
                 case 2:
+                    system("cls");
                     cout << "|--------Enroll Student in Course--------|\n";
-                    cout << "Enter Student ID: ";
-                    cin >> findStudID;
-                    
+                    cout << "| Enter Student ID: ";
+                    cin.ignore();
+                    getline(cin, findStudID);
                         for (int i = 0; i < studInfo.size(); i++)
                         {
                             if (studInfo[i].studentID == findStudID)
@@ -646,11 +1012,12 @@ class processing{
                                     cout << "| 2. Bachelor of Science in Business Administration\n";
                                     cout << "| 3. Bachelor of Science in Agriculture\n";
                                     cout << "|----------------------------------------|\n";
-                                    cin >> selections;
+                                    cout << "| Selection: ";
+                                    selections = errorInputHandlingInt();
                                     switch (selections)
                                     {
                                     case 1:
-                                        if (studCap != 0)
+                                        if (studCap[0] != 0)
                                         {
                                             studAcadPerf studentGrades;
                                             studCap[0]--;
@@ -661,14 +1028,24 @@ class processing{
                                             studentGrades.grades.push_back(0.00);
                                             studentGrades.grades.push_back(0.00);
                                             studGrades.push_back(studentGrades);
+                                            system("cls");
                                             cout << "|----------------------------------------|\n";
                                             cout << "|---Student Officialy Enrolled on BSIT---|\n";
                                             cout << "|----------------------------------------|\n";
                                             studentEnrolled++;
+                                            system("pause");
+                                            system("cls");
+                                        }
+                                        else
+                                        {
+                                            system("cls");
+                                            cout << "|-------------Course Full!---------------|\n";
+                                            system("pause");
+                                            system("cls");
                                         }
                                         break;
                                     case 2:
-                                        if (studCap != 0)
+                                        if (studCap[1] != 0)
                                         {
                                             studAcadPerf studentGrades;
                                             studCap[0]--;
@@ -679,14 +1056,24 @@ class processing{
                                             studentGrades.grades.push_back(0.00);
                                             studentGrades.grades.push_back(0.00);
                                             studGrades.push_back(studentGrades);
+                                            system("cls");
                                             cout << "|----------------------------------------|\n";
                                             cout << "|---Student Officialy Enrolled on BSBA---|\n";
                                             cout << "|----------------------------------------|\n";
                                             studentEnrolled++;
+                                            system("pause");
+                                            system("cls");
+                                        }
+                                        else
+                                        {
+                                            system("cls");
+                                            cout << "|-------------Course Full!---------------|\n";
+                                            system("pause");
+                                            system("cls");
                                         }
                                         break;
                                     case 3:
-                                        if (studCap != 0)
+                                        if (studCap[2] != 0)
                                         {
                                             studAcadPerf studentGrades;
                                             studCap[0]--;
@@ -697,14 +1084,27 @@ class processing{
                                             studentGrades.grades.push_back(0.00);
                                             studentGrades.grades.push_back(0.00);
                                             studGrades.push_back(studentGrades);
+                                            system("cls");
                                             cout << "|----------------------------------------|\n";
                                             cout << "|----Student Officialy Enrolled on BSA---|\n";
                                             cout << "|----------------------------------------|\n";
                                             studentEnrolled++;
+                                            system("pause");
+                                            system("cls");
+                                        }
+                                        else
+                                        {
+                                            system("cls");
+                                            cout << "|-------------Course Full!---------------|\n";
+                                            system("pause");
+                                            system("cls");
                                         }
                                         break;
                                     default:
+                                        system("cls");
                                         cout << "|-------------Invalid Input!-------------|\n";
+                                        system("pause");
+                                        system("cls");
                                         break;
                                     }
                                     find = true;
@@ -713,34 +1113,80 @@ class processing{
                                         studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration" ||
                                         studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
                                 {
+                                    system("cls");
                                     cout << "|----------------------------------------|\n";
                                     cout << "|--------Student Already Enrolled--------|\n";
                                     cout << "|----------------------------------------|\n";
                                     find = true;
+                                    system("pause");
+                                    system("cls");
                                 }
                             }
                         }
                         if (!find)
                         {
+                            system("cls");
                             cout << "|----------------------------------------|\n";
                             cout << "|-----------Student Not Found!-----------|\n";
                             cout << "|----------------------------------------|\n";
+                            system("pause");
+                            system("cls");
                         }
                     break;
                 case 3:
-
+                    system("cls");
+                    cout << "|--------------Drop Course---------------|\n";
+                    cout << "| Enter Student ID: ";
+                    cin.ignore();
+                    getline(cin, findStudID);
+                        for (int i = 0; i < studInfo.size(); i++)
+                        {
+                            if (studInfo[i].studentID == findStudID)
+                            {
+                                if (studInfo[i].courseEnrolled == "Not Enrolled")
+                                {
+                                    system("cls");
+                                    cout << "|----------------------------------------|\n";
+                                    cout << "|----Student Not Enrolled in any Course---|\n";
+                                    cout << "|----------------------------------------|\n";
+                                    system("pause");
+                                    system("cls");
+                                }
+                                else if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology" ||
+                                        studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration" ||
+                                        studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                {
+                                    studInfo[i].courseEnrolled = "Not Enrolled";
+                                    system("cls");
+                                        for (int k = 0; k < studGrades.size(); k++)
+                                        {
+                                            if (studGrades[k].studId == findStudID)
+                                            {
+                                                studGrades.erase(studGrades.begin() + k);
+                                            }
+                                        }
+                                    cout << "|----------------------------------------|\n";
+                                    cout << "|----Student Officialy Dropped Course----|\n";
+                                    cout << "|----------------------------------------|\n";
+                                    studentEnrolled--;
+                                    system("pause");
+                                    system("cls");
+                                }
+                            }
+                        }
                     break;
                 case 4:
                 loop = false;
                     break;
-                
                 default:
+                    system("cls");
                     cout << "|-----------Invalid Selection!-----------|\n";
+                    system("pause");
+                    system("cls");
                     break;
                 }
             }
         }
-
         void mgmStdRecords(){
             int sel;
             bool loop = true;
@@ -748,43 +1194,57 @@ class processing{
             {
                 string findID;
                 bool found = false;
+                system("cls");
                 cout << "|---------Manage Student Records---------|\n";
                 cout << "| 1. View Student Details                |\n";
                 cout << "| 2. Edit Student Details                |\n";
                 cout << "| 3. Delete Student Record               |\n";
                 cout << "| 4. Back                                |\n";
                 cout << "|----------------------------------------|\n";
-                cout << "Selection: ";
-                cin >> sel;
+                cout << "| Selection: ";
+                sel = errorInputHandlingInt();
                 switch (sel)
                 {
                 case 1:
+                system("cls");
                 cout << "|----------View Student Details----------|\n";
-                cout << "Enter Student Id: ";
-                cin >> findID;
+                cout << "| Enter Student Id: ";
+                cin.ignore();
+                getline(cin, findID);
                     for (int i = 0; i < studInfo.size(); i++)
                     {
                         if (studInfo[i].studentID == findID)
                         {
+                            cout << "|----------------------------------------|\n";
                             printStudentInfo(i);
                             found = true;
+                            cout << "|----------------------------------------|\n";
+                            system("pause");
+                            system("cls");
                         }
                     }
                         if (!found)
                         {
+                            system("cls");
                             cout << "|----------------------------------------|\n";
                             cout << "|-----------Student Not Found!-----------|\n";
                             cout << "|----------------------------------------|\n";
+                            system("pause");
+                            system("cls");
                         }
                     break;
                 case 2:
                 int selection;
+                system("cls");
                 cout << "Enter Student ID to edit: ";
-                cin >> findID;
+                cin.ignore();
+                getline(cin, findID);
                     for (int i = 0; i < studInfo.size(); i++)
                     {
                         if (studInfo[i].studentID == findID)
                         {
+                            bool looop = true;
+                            while (looop){
                             cout << "~~ Student ID      :: " << studInfo[i].studentID << endl;
                             cout << "1. Full Name       :: " << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
                             cout << "2. Sex             :: " << studInfo[i].sex << endl;
@@ -796,10 +1256,11 @@ class processing{
                             cout << "8. Cancel" << endl;
                             found = true;
                             cout << "Selection: ";
-                            cin >> selection;
+                            selection = errorInputHandlingInt();
                                 switch (selection)
                                 {
                                 case 1:
+                                system("cls");
                                 cout << "|------------Change Full Name------------|\n";
                                 cout << "a. Last Name   :: ";
                                 cin.ignore();
@@ -809,13 +1270,16 @@ class processing{
                                 cout << "c. Middle Name :: ";
                                 getline(cin, studInfo[i].fullName.middleName);
                                 cout << "|-----FullName modified successfully-----|\n";
+                                system("pause");
+                                system("cls");
                                     break;
                                 case 2:
+                                system("cls");
                                     cout << "|---------------Change Sex---------------|\n";
                                     do
                                     {
                                         cout << "Enter Sex (M/F): ";
-                                        cin >> studInfo[i].sex;
+                                        studInfo[i].sex = errorInputHandlingChar();
                                         if (studInfo[i].sex == 'm')
                                         {
                                             studInfo[i].sex = 'M';
@@ -826,18 +1290,24 @@ class processing{
                                         }
                                             if (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F')
                                             {
+                                                system("cls");
                                                 cout << "|-------------Invalid Input!-------------|";
+                                                system("pause");
+                                                system("cls");
                                             }
-                                            
                                     } while (studInfo[i].sex != 'm' && studInfo[i].sex != 'M' && studInfo[i].sex != 'f' && studInfo[i].sex != 'F');
+                                    system("cls");
                                     cout << "|--------Sex Successfully Changed--------|\n";
+                                    system("pause");
+                                    system("cls");
                                     break;
                                 case 3:
+                                system("cls");
                                 cout << "|------------Change BirthDate------------|\n";
                                     do
                                     {
-                                        cout << "Month (1-12)   :: ";
-                                        cin >> studInfo[i].birthDate.month;
+                                        cout << "| Month (1-12)   :: ";
+                                        studInfo[i].birthDate.month = errorInputHandlingInt();
                                             if (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0)
                                             {
                                                 cout << "|-------------Invalid Input!-------------|";
@@ -845,8 +1315,8 @@ class processing{
                                     } while (studInfo[i].birthDate.month > 12 || studInfo[i].birthDate.month <= 0);
                                     do
                                     {
-                                        cout << "Day            :: ";
-                                        cin >> studInfo[i].birthDate.day;
+                                        cout << "| Day            :: ";
+                                        studInfo[i].birthDate.day = errorInputHandlingInt();
                                             if (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0)
                                             {
                                                 cout << "|-------------Invalid Input!-------------|";
@@ -854,61 +1324,205 @@ class processing{
                                     } while (studInfo[i].birthDate.day > 31 || studInfo[i].birthDate.day <= 0);
                                     do
                                     {
-                                        cout << "Year: ";
-                                        cin >> studInfo[i].birthDate.year;
+                                        cout << "| Year           :: ";
+                                        studInfo[i].birthDate.year = errorInputHandlingInt();
                                             if (studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0)
                                             {
                                                 cout << "|-------------Invalid Input!-------------|";
                                             }
                                     } while (studInfo[i].birthDate.year > 2024 || studInfo[i].birthDate.year <= 1900 || studInfo[i].birthDate.day <= 0);                            
                                             cout << "|-----Birthdate changed Successfully-----|\n";
+                                            system("pause");
+                                            system("cls");
                                     break;
                                 case 4:
+                                system("cls");
                                     cout << "|-----------Change PhoneNumber-----------|\n";
                                     cout << "Phone Number: ";
-                                    cin >> studInfo[i].phoneNumber;
-                                    cout << "|----------------------------------------|\n";
+                                    studInfo[i].phoneNumber = errorInputHandlingLong();
                                     cout << "|----PhoneNumber Changed Successfully----|\n";
+                                    system("pause");
+                                    system("cls");
                                     break;
                                 case 5:
+                                system("cls");
                                     cout << "|----------Change Email Address----------|\n";
                                     cout << "Email Address: ";
-                                    cin >> studInfo[i].email;
+                                    cin.ignore();
+                                    getline(cin, studInfo[i].email);
                                     cout << "|---Email Address Changed Successfully---|\n";
+                                    system("pause");
+                                    system("cls");
                                     break;
                                 case 6:
+                                system("cls");
                                     cout << "|-------------Change Address-------------|\n";
                                     cout << "Address: ";
                                     cin.ignore();
                                     getline(cin, studInfo[i].address);
                                     cout << "|------Address Changed Successfully------|\n";
+                                    system("pause");
+                                    system("cls");
                                     break;
                                 case 7:
-                                    cout << "|---------Change Course Enrolled---------|\n";
-                                    cout << "Course Enrolled: ";
-                                    
-                                    cout << "|--Course Enrolled Changed Successfully--|\n";
+                                    for (int j = 0; j < studGrades.size(); j++)
+                                    {
+                                        if (findID == studGrades[j].studId)
+                                        {
+                                            system("cls");
+                                            int selectCourse;
+                                            cout << "|---------Change Course Enrolled---------|\n";
+                                            cout << "| Course Enrolled: " << studInfo[j].courseEnrolled << endl;
+                                            cout << "|----------------------------------------|\n";
+                                            cout << "| 1. Bachelor of Science in Information Technology\n";
+                                            cout << "| 2. Bachelor of Science in Business Administration\n";
+                                            cout << "| 3. Bachelor of Science in Agriculture\n";
+                                            cout << "| 4. Cancel\n";
+                                            cout << "|----------------------------------------|\n";
+                                            bool changeCourse = true;
+                                            while(changeCourse)
+                                            {
+                                                cout << "| Selection: ";
+                                                selectCourse = errorInputHandlingInt();
+                                                bool ifEnrolled = false;
+                                                if (selectCourse == 1)
+                                                {
+                                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+                                                    {
+                                                        cout << "|---Student Already Enrolled in BSIT---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+                                                    {
+                                                        studCap[0]++;
+                                                        studCap[1]--;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Information Technology";
+                                                        studGrades[j].course = "Bachelor of Science in Information Technology";
+                                                        cout << "|---Student Enrolled in BSIT Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                                    {
+                                                        studCap[0]++;
+                                                        studCap[2]--;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Information Technology";
+                                                        studGrades[j].course = "Bachelor of Science in Information Technology";
+                                                        cout << "|---Student Enrolled in BSIT Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                }
+                                                else if (selectCourse == 2)
+                                                {
+                                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+                                                    {
+                                                        cout << "|---Student Already Enrolled in BSBA---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+                                                    {
+                                                        studCap[0]--;
+                                                        studCap[1]++;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Business Administration";
+                                                        studGrades[j].course = "Bachelor of Science in Business Administration";
+                                                        cout << "|---Student Enrolled in BSBA Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                                    {
+                                                        studCap[1]++;
+                                                        studCap[2]--;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Business Administration";
+                                                        studGrades[j].course = "Bachelor of Science in Business Administration";
+                                                        cout << "|---Student Enrolled in BSBA Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                }
+                                                else if(selectCourse == 3)
+                                                {
+                                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                                    {
+                                                        cout << "|---Student Already Enrolled in BSA---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+                                                    {
+                                                        studCap[0]--;
+                                                        studCap[2]++;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Agriculture";
+                                                        studGrades[j].course = "Bachelor of Science in Agriculture";
+                                                        cout << "|---Student Enrolled in BSA Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                    else if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+                                                    {
+                                                        studCap[1]--;
+                                                        studCap[2]++;
+                                                        studInfo[i].courseEnrolled = "Bachelor of Science in Agriculture";
+                                                        studGrades[j].course = "Bachelor of Science in Agriculture";
+                                                        cout << "|---Student Enrolled in BSA Successfully---|\n";
+                                                        ifEnrolled = true;
+                                                        changeCourse = false;
+                                                    }
+                                                }
+                                                else if (selectCourse == 4)
+                                                {
+                                                    changeCourse = false;
+                                                }
+                                                else{
+                                                    cout << "|-----------Invalid Selection!-----------|\n";
+                                                }
+                                            }
+                                            cout << "|--Course Enrolled Changed Successfully--|\n";
+                                            system("pause");
+                                            system("cls");
+                                        }
+                                        else
+                                        {
+                                            system("cls");
+                                            cout << "|-----------Student Not Enrolled!-----------|\n";
+                                            system("pause");
+                                            system("cls");
+                                        }
+                                    }                               
                                     break;
                                 case 8:
-                                    continue;
+                                    looop = false;
                                     break;
                                 default:
+                                    system("cls");
                                     cout << "|-----------Invalid Selection!-----------|\n";
+                                    system("pause");
+                                    system("cls");
                                     break;
                                 }
+                            }
                         }
                     }
                         if (!found)
                         {
+                            system("cls");
                             cout << "|----------------------------------------|\n";
                             cout << "|-----------Student Not Found!-----------|\n";
                             cout << "|----------------------------------------|\n";
+                            system("pause");
+                            system("cls");  
                         }
                     break;
                 case 3:
+                system("cls");
                 char delet3;
-                cout << "Enter Student ID: ";
-                cin >> findID;
+                cout << "|----------Delete Student Record---------|\n";
+                cout << "| Enter Student ID: ";
+                cin.ignore();
+                getline(cin, findID);
                     for (int i = 0; i < studInfo.size(); i++)
                     {
                         if (studInfo[i].studentID == findID)
@@ -916,7 +1530,7 @@ class processing{
                             printStudentInfo(i);
                             found = true;
                             cout << "Do you really want to delete this student record (Y/N)?: ";
-                            cin >> delet3;
+                            delet3 = errorInputHandlingChar();
                             if (delet3 == 'Y' || delet3 == 'y')
                             {
                                 studInfo.erase(studInfo.begin() + i);
@@ -938,9 +1552,12 @@ class processing{
                     }
                         if (!found)
                         {
+                            system("cls");
                             cout << "|----------------------------------------|\n";
                             cout << "|-----------Student Not Found!-----------|\n";
                             cout << "|----------------------------------------|\n";
+                            system("pause");
+                            system("cls");
                         }
 
                     break;
@@ -948,7 +1565,10 @@ class processing{
                 loop = false;
                     break;
                 default:
+                system("cls");
                 cout << "|-----------Invalid Selection!-----------|\n";
+                system("pause");
+                system("cls");
                     break;
                 }
             }
@@ -956,10 +1576,11 @@ class processing{
         void mngGrades(){
             string findID;
             bool found = false;
+            system("cls");
             cout << "|----------Manage Grades----------|\n";
             cout << "Enter Student ID: ";
-            cin >> findID;
-            
+            cin.ignore();
+            getline(cin, findID);
             for (int i = 0; i < studGrades.size(); i++)
             {
                 if (studGrades[i].studId == findID)
@@ -980,7 +1601,7 @@ class processing{
                     cout << "| 4. Back                        |\n";
                     cout << "|--------------------------------|\n";
                     cout << "Selection: ";
-                    cin >> selection;
+                    selection = errorInputHandlingInt();
                     int subject;
                     float grade;
                     switch (selection)
@@ -1004,11 +1625,11 @@ class processing{
                                 cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
                                 cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
                             }
-                                cout << "Enter the subject: ";
-                                cin >> subject;
+                                cout << "| Enter the subject: ";
+                                subject = errorInputHandlingInt();
                                 if (subject == 1) {
-                                    cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    cout << "| Enter the grade: ";
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1017,13 +1638,13 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
                                 } else if (subject == 2) {
                                     cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1032,13 +1653,13 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
                                 } else if (subject == 3) {
                                     cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1047,10 +1668,12 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
+                                    system("pause");
+                                    system("cls");
                                 } 
                                 else {
                                     cout << "|-----------Invalid Subject!-----------|\n";
@@ -1077,10 +1700,10 @@ class processing{
                                     cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
                                 }
                             cout << "Enter the subject: ";
-                            cin >> subject;
+                            subject = errorInputHandlingInt();
                                 if (subject == 1) {
                                     cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1089,13 +1712,13 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
                                 } else if (subject == 2) {
                                     cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1104,13 +1727,13 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
                                 } else if (subject == 3) {
                                     cout << "Enter the grade: ";
-                                    cin >> grade;
+                                    grade = errorInputHandlingFloat();
                                     while (true)
                                     {
                                         if (grade >= 1.0 && grade <= 5.0) {
@@ -1119,7 +1742,7 @@ class processing{
                                         } else {
                                             cout << "|-----------Invalid Grade!-----------|\n";
                                             cout << "Enter the grade: ";
-                                            cin >> grade;
+                                            grade = errorInputHandlingFloat();
                                         }
                                     }
                                     cout << "|-----------Grade Added!-----------|\n";
@@ -1147,8 +1770,8 @@ class processing{
                                 cout << "| 2. Test Subject 2: " << studGrades[i].grades[1] << endl;
                                 cout << "| 3. Test Subject 3: " << studGrades[i].grades[2] << endl;
                             }
-                            cout << "Enter the subject: ";
-                            cin >> subject;
+                            cout << "| Enter the subject: ";
+                            subject = errorInputHandlingInt();
                             if (subject == 1) {
                                 studGrades[i].grades[0] = 0;
                                 cout << "|-----------Grade Deleted!-----------|\n";
@@ -1185,6 +1808,8 @@ class processing{
             bool loop = true;
             while(loop)
             {
+                system("cls");
+                string username, password;
                 cout << "|------------Generate Reports------------|\n";
                 cout << "| 1. Generate Student List               |\n";
                 cout << "| 2. Generate Course Schedule            |\n";
@@ -1192,33 +1817,106 @@ class processing{
                 cout << "| 4. Back                                |\n";
                 cout << "|----------------------------------------|\n";
                 cout << "Selection: ";
-                cin >> sel;
+                sel = errorInputHandlingInt();
                 if (sel == 1)
                 {
-                    if (studInfo.size() <= 0)
+                    system("cls");
+                    cout << "|----------------------------------------|\n";
+                    cout << "|--------Admin Previlage Required--------|\n";
+                    cout << "| Username: ";
+                    cin.ignore();
+                    getline(cin, username);
+                    cout << "| Password: ";
+                    password = "";
+                    char ch;
+                    while ((ch = _getch()) != '\r')
                     {
-                        cout << "|----------------------------------------|\n";
-                        cout << "|---------No Students Registered---------|\n";
-                        cout << "|----------------------------------------|\n";
+                        password.push_back(ch);
+                        cout << '*';
+                    }
+                    if (username == getUsername() && password == getPassword())
+                    {
+                        system("cls");
+                        if (studInfo.size() <= 0)
+                        {
+                            cout << "|----------------------------------------|\n";
+                            cout << "|---------No Students Registered---------|\n";
+                            cout << "|----------------------------------------|\n";
+                        }
+                        else
+                        {
+                            cout << "|--------------Student List--------------|\n";
+                            cout << "|----------------------------------------|\n";
+                            cout << "| BSIT Students: \n";
+                                for (int i = 0; i < studInfo.size(); i++)
+                                {
+                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Information Technology")
+                                    {
+                                        cout << "| " << studInfo[i].studentID << " :: ";
+                                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                                    }
+                                }
+                            cout << "|----------------------------------------|\n";
+                            cout << "| BSBA Students: \n";
+                                for (int i = 0; i < studInfo.size(); i++)
+                                {
+                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Business Administration")
+                                    {
+                                        cout << "| " << studInfo[i].studentID << " :: ";
+                                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                                    }
+                                }
+                            cout << "|----------------------------------------|\n";
+                            cout << "| BSA Students: \n";
+                                for (int i = 0; i < studInfo.size(); i++)
+                                {
+                                    if (studInfo[i].courseEnrolled == "Bachelor of Science in Agriculture")
+                                    {
+                                        cout << "| " << studInfo[i].studentID << " :: ";
+                                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                                    }
+                                }
+                            cout << "|----------------------------------------|\n";
+                            cout << "| Not Enrolled: \n";
+                                for (int i = 0; i < studInfo.size(); i++)
+                                {
+                                    if (studInfo[i].courseEnrolled == "Not Enrolled")
+                                    {
+                                        cout << "| " << studInfo[i].studentID << " :: ";
+                                        cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
+                                    }
+                                }
+                            cout << "|----------------------------------------|\n";
+                            txtBaseAccess getNum;
+                            cout << "| BSIT Students            :: " << getNum.runGetStudentCount("BSITenrolled") << endl;
+                            cout << "| BSBA Students            :: " << getNum.runGetStudentCount("BSBAenrolled") << endl;
+                            cout << "| BSA Students             :: " << getNum.runGetStudentCount("BSAenrolled") << endl;
+                            cout << "| Not Enrolled             :: " << getNum.runGetStudentCount("notEnrolled") << endl;
+                            cout << "| Total Number of Students :: " << studentNum << endl;
+                            cout << "|----------------------------------------|\n";
+                        }
+                        system("pause");
+                        system("cls");
                     }
                     else
                     {
-                        cout << "|--------------Student List--------------|\n";
-                        for (int i = 0; i < studInfo.size(); i++)
-                        {
-                            cout << studInfo[i].studentID << " :: ";
-                            cout << studInfo[i].fullName.lastName << ", " << studInfo[i].fullName.firstName << ' ' << studInfo[i].fullName.middleName << endl;
-                        }
-                        cout << "|----------------------------------------|\n";                    
+                        system("cls");
+                        cout << "|----------------------------------------|\n";
+                        cout << "|--------Admin Previlage Denied----------|\n";
+                        cout << "|----------------------------------------|\n";
+                        system("pause");
+                        system("cls");
                     }
                 }
                 else if (sel == 2)
                 {
+                    system("cls");
                     string findID;
                     bool found = false;
                     cout << "|--------Generate Course Schedule--------|\n";
-                    cout << "Enter Student ID: ";
-                    cin >> findID;
+                    cout << "| Enter Student ID: ";
+                    cin.ignore();
+                    getline(cin, findID);
                     for (int i = 0; i < studInfo.size(); i++)
                     {
                         if (studInfo[i].studentID == findID)
@@ -1230,7 +1928,7 @@ class processing{
                                 cout << "|-----------Course Schedule-------------|\n";
                                 cout << "Student ID: " << findID << endl;
                                 cout << "Course Enrolled: " << courseEnrolled << endl;
-                                cout << "Schedule: ";
+                                cout << "Schedule: \n";
                                 if (courseEnrolled == "Bachelor of Science in Information Technology")
                                 {
                                     cout << "          Monday 8:00 AM - 10:00 AM" << endl;
@@ -1266,14 +1964,18 @@ class processing{
                         cout << "|-----------Student Not Found!----------|\n";
                         cout << "|---------------------------------------|\n";
                     }
+                    system("pause");
+                    system("cls");
                 }
                 else if (sel == 3)
                 {
+                    system("cls");
                     string findID;
                     bool found = false;
                     cout << "|--------Generate Academic Performance Report--------|\n";
-                    cout << "Enter Student ID: ";
-                    cin >> findID;
+                    cout << "| Enter Student ID: ";
+                    cin.ignore();
+                    getline(cin, findID);
                     for (int i = 0; i < studInfo.size(); i++)
                     {
                         if (studInfo[i].studentID == findID)
@@ -1285,7 +1987,7 @@ class processing{
                                 cout << "|-----------Academic Performance Report-------------|\n";
                                 cout << "Student ID: " << findID << endl;
                                 cout << "Course Enrolled: " << courseEnrolled << endl;
-                                cout << "Grades: ";
+                                cout << "Grades: " << endl;
                                 if (studGrades[i].course == "Bachelor of Science in Information Technology")
                                 {
                                     cout << "| 1. CC101: " << studGrades[i].grades[0] << endl;
@@ -1320,6 +2022,8 @@ class processing{
                         cout << "|-----------Student Not Found!-----------|\n";
                         cout << "|----------------------------------------|\n";
                     }
+                    system("pause");
+                    system("cls");
                 }
                 else if (sel == 4)
                 {
@@ -1327,25 +2031,26 @@ class processing{
                 }
                 else
                 {
+                    system("cls");
                     cout << "|-----------Invalid Selection!-----------|\n";
+                    system("pause");
+                    system("cls");
                 }
             }
         }
-
     public:
-
-    void runStdRegEnroll(){
-        stdRegNenroll();
-    }
-    void runStdRecords(){
-        mgmStdRecords();
-    }
-    void runMngGrades(){
-        mngGrades();
-    }
-    void runGenReports(){
-        genReports();
-    }
+        void runStdRegEnroll(){
+            stdRegNenroll();
+        }
+        void runStdRecords(){
+            mgmStdRecords();
+        }
+        void runMngGrades(){
+            mngGrades();
+        }
+        void runGenReports(){
+            genReports();
+        }
 };
 
 int main()
@@ -1353,21 +2058,12 @@ int main()
     processing process;
     dBaseAccess accessDbase;
     login loginInfo;
-    int sel;
-    char selC;    
+    accessDbase.initialize();
     string admin, pass;
-    accessDbase.runCreateDB();
-    accessDbase.runPullFDbase();
-    studentEnrolled = accessDbase.runGetStudentCount("totalEnrolled");
-    if (studentEnrolled > 0)
-    {
-        accessDbase.runPullGrades();
-    }
-    studentNum = accessDbase.runGetStudentCount("studentNumbers");
     bool loop = true;
     while (loop)
     {
-        
+        system("cls");
         cout << "|--------Student Management System-------|\n";
         cout << "|------------------Menu------------------|\n";
         cout << "| 1. Student Registration and Enrollment |\n";
@@ -1377,71 +2073,75 @@ int main()
         cout << "| 5. Exit                                |\n";
         cout << "|----------------------------------------|\n";
         cout << "Selection: ";
-        cin >> sel;
-        switch (sel)
+        switch (errorInputHandlingInt())
             {
-            case 1:
-                process.runStdRegEnroll();
-                break;
-            case 2:
-            cout << "|--------Admin Previlage Required--------|\n";
-            cout << "| Username: ";
-            cin >> admin;
-            cout << "| Password: ";
-            cin >> pass;
-            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
-            {
-                process.runStdRecords();                
-            }
-            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
-            {
-                cout << "|---Username and Password did not match--|\n";
-            }
-                break;
-            case 3:
-            cout << "|--------Admin Previlage Required--------|\n";
-            cout << "| Username: ";
-            cin >> admin;
-            cout << "| Password: ";
-            cin >> pass;
-            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
-            {
-                process.runMngGrades();                
-            }
-            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
-            {
-                cout << "|---Username and Password did not match--|\n";
-            }           
-                break;
-            case 4:
-            cout << "|--------Admin Previlage Required--------|\n";
-            cout << "| Username: ";
-            cin >> admin;
-            cout << "| Password: ";
-            cin >> pass;
-            if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
-            {
-                process.runGenReports();                
-            }
-            else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
-            {
-                cout << "|---Username and Password did not match--|\n";
-            }           
-                break;
-            case 5:
-                loop = false;
-                break;
-            default:
-                cout << "|-----------Invalid Selection!-----------|\n";
-                break;
+                case 1:
+                    process.runStdRegEnroll();
+                    break;
+                case 2:
+                system("cls");
+                cout << "|--------Admin Previlage Required--------|\n";
+                cout << "| Username: ";
+                cin.ignore();
+                getline(cin, admin);
+                cout << "| Password: ";
+                pass = "";
+                char c;
+                while ((c = _getch()) != '\r') {
+                    pass.push_back(c);
+                    cout << '*';
+                }
+                if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
+                {
+                    process.runStdRecords();                
+                }
+                else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
+                {
+                    cout << "|---Username and Password did not match--|\n";
+                }
+                    break;
+                case 3:
+                system("cls");
+                cout << "|--------Admin Previlage Required--------|\n";
+                cout << "| Username: ";
+                cin.ignore();
+                getline(cin, admin);
+                cout << "| Password: ";
+                pass = "";
+                char cr;
+                while ((cr = _getch()) != '\r') {
+                    pass.push_back(cr);
+                    cout << '*';
+                }
+                if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
+                {
+                    process.runMngGrades();                
+                }
+                else if(admin != loginInfo.getUsername() || pass != loginInfo.getPassword())
+                {
+                    system("cls");
+                    cout << "|---Username and Password did not match--|\n";
+                    system("pause");
+                    system("cls");
+                }           
+                    break;
+                case 4:
+                process.runGenReports();        
+                    break;
+                case 5:
+                    loop = false;
+                    break;
+                default:
+                    system("cls");
+                    cout << "|-----------Invalid Selection!-----------|\n";
+                    system("pause");
+                    system("cls");
+                    break;
             }
     }
-    remove("Student Information.db");
-    accessDbase.runCreateDB();
-    accessDbase.runPush2DB();
-    if (accessDbase.runGetStudentCount("totalEnrolled") > 0 || studentEnrolled > 0)
-    {
-        accessDbase.runPushGrades();
-    }    
+    accessDbase.finalize();
+    cout << "|----------------------------------------|\n";
+    cout << "|-------------Program Exiting------------|\n";
+    cout << "|----------------------------------------|\n";
     return 0;
 }
