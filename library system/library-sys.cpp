@@ -52,7 +52,6 @@ void pushUsersToTxt() {
         cout << "|==================================================|" << endl;
     }
 }
-
 void pullUsersFromTxt() {
     ifstream file("users.txt");
     if (file.is_open()) {
@@ -70,7 +69,6 @@ void pullUsersFromTxt() {
         createFile.close();
     }
 }
-
 void pushBooksToTxt() {
     ofstream file("books.txt");
     if (file.is_open()) {
@@ -93,7 +91,6 @@ void pushBooksToTxt() {
         cout << "|==================================================|" << endl;
     }
 }
-
 void pullBooksFromTxt()
 {
     ifstream file("books.txt");
@@ -136,7 +133,6 @@ void pullBooksFromTxt()
     }
     file.close();
 }
-
 bool adminLogon(string username, string password){
     system("cls");
     string adminUsername = "admin";
@@ -156,7 +152,6 @@ bool adminLogon(string username, string password){
         system("cls");
         return false;
 }
-
 void registerUser() {
     User user;
     system("cls");
@@ -202,7 +197,6 @@ void registerUser() {
         system("cls");
     }
 }
-
 bool loginUser(string username, string password) {
     bool found = false;
     system("cls");
@@ -233,7 +227,6 @@ bool loginUser(string username, string password) {
         return false;
     }
 }
-
 void borrowBook(string borrower) {
     string bookId;
     system("cls");
@@ -263,7 +256,6 @@ void borrowBook(string borrower) {
     system("pause");
     system("cls");
 }
-
 void printOverdueBooks(){
     bool found = false;
     system("cls");
@@ -291,7 +283,6 @@ void printOverdueBooks(){
     system("pause");
     system("cls");
 }
-
 void returnBook() {
     string bookId;
     system("cls");
@@ -318,7 +309,6 @@ void returnBook() {
     system("pause");
     system("cls");
 }
-
 void searchBook() {
     string bookName;
     system("cls");
@@ -347,7 +337,6 @@ void searchBook() {
     system("pause");
     system("cls");
 }
-
 void viewAllBooks() {
     system("cls");
         cout << "|================ All Books =======================|" << endl;
@@ -363,7 +352,6 @@ void viewAllBooks() {
     system("pause");
     system("cls");
 }
-
 void viewAllAvailableBooks() {
     bool found = false;
     system("cls");
@@ -386,7 +374,6 @@ void viewAllAvailableBooks() {
     system("pause");
     system("cls");
 }
-
 void addBook() {
     Book book;
     system("cls");
@@ -421,7 +408,6 @@ void addBook() {
     system("pause");
     system("cls");
 }
-
 void removeBook() {
     string bookId;
     system("cls");
@@ -445,7 +431,6 @@ void removeBook() {
     system("pause");
     system("cls");
 }
-
 void viewAllBorrowedBooks() {
     bool found = false;
     system("cls");
