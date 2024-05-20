@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <limits>
+#include <ctime>
 using namespace std;
 
 time_t t = time(nullptr);
