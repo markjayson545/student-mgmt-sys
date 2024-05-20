@@ -58,7 +58,6 @@ int errorInputHandlingInt(){
     }
     return input;
 }
-
 long long int errorInputHandlingLong(){
     long long int input;
     bool validType = false;
@@ -78,7 +77,6 @@ long long int errorInputHandlingLong(){
     }
     return input;
 }
-
 float errorInputHandlingFloat(){
     float input;
     bool validType = false;
@@ -98,7 +96,6 @@ float errorInputHandlingFloat(){
     }
     return input;
 }
-
 char errorInputHandlingChar(){
     char input;
     bool validType = false;

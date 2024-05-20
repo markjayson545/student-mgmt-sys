@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-
+#include <limits>
 using namespace std;
 
 time_t t = time(nullptr);
@@ -34,6 +34,26 @@ struct User {
 
 vector <Book> books;
 vector <User> users;
+
+int errorInputHandlingInt(){
+    int input;
+    bool validType = false;
+    while (!validType){
+        cin >> input;
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "\n|-----------Invalid Selection!-----------|\n";
+            cout << "| Selection: ";
+        }
+        else
+        {
+            validType = true;
+        }
+    }
+    return input;
+}
 
 void pushUsersToTxt() {
     ofstream file("users.txt");
@@ -195,6 +215,7 @@ void registerUser() {
         cout << endl;
         system("pause");
         system("cls");
+        return;
     }
 }
 bool loginUser(string username, string password) {
@@ -472,7 +493,7 @@ int main() {
         cout << "| 4. Exit                                          |" << endl;
         cout << "|==================================================|" << endl;
         cout << "| Enter your choice: ";
-        cin >> choice;
+        choice = errorInputHandlingInt();
         system("cls");
         if (choice == 1) 
         {
@@ -502,8 +523,7 @@ int main() {
                             cout << "| 6. Back                                          |" << endl;
                             cout << "|==================================================|" << endl;
                             cout << "| Enter your choice: ";
-                            cin >> choice;
-                            switch (choice) {
+                            switch (errorInputHandlingInt()) {
                                 case 1:
                                     borrowBook(username);
                                     break;
