@@ -1,0 +1,30 @@
+Book Name: helluniversity
+Book ID: 666
+Author: night
+Publisher: orning
+Available: Yes
+Borrowed By: Yes
+Day Borrowed: 20
+Month Borrowed: 5
+Year Borrowed: 2024
+
+Book Name: imaginary mathematics
+Book ID: 35
+Author: apolito
+Publisher: pollo
+Available: No
+Borrowed By: No
+Day Borrowed: 20
+Month Borrowed: 5
+Year Borrowed: 2024
+
+Book Name: tese
+Book ID: teset
+Author: teset
+Publisher: test
+Available: Yes
+Borrowed By: Yes
+Day Borrowed: 0
+Month Borrowed: 0
+Year Borrowed: 0
+

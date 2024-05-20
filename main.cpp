@@ -968,7 +968,6 @@ class processing: public login{
                         cin.ignore();
                         getline(cin, student.email);
                         cout << "| Enter Address: ";
-                        cin.ignore(); // ignore above nanaman
                         getline(cin, student.address);
                         studentNum++;
                         if (studentNum > 1) {
@@ -987,7 +986,10 @@ class processing: public login{
                         system("cls");
                         cout << "|-----------Student Registered-----------|\n";
                         printStudentInfo(studentNum - 1);
-                    cout << "|----------------------------------------|\n";
+                        cout << "|----------------------------------------|\n\n";
+                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+                        cout << "+++++++REMEMEBER YOUR STUDENT ID++++++++++\n";
+                        cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
                     system("pause");
                     system("cls");
                     break;
@@ -1576,11 +1578,10 @@ class processing: public login{
             system("cls");
             cout << "|----------Manage Grades----------|\n";
             cout << "Enter Student ID: ";
-            cin.ignore();
-            getline(cin, findID);
+            cin >> findID;
             for (int i = 0; i < studGrades.size(); i++)
             {
-                if (studGrades[i].studId == findID)
+                if (findID == studGrades[i].studId)
                 {
                     bool loop = true;
                     while (loop)
@@ -1799,6 +1800,8 @@ class processing: public login{
             cout << "|-----------Student Not Found!-----------|\n";
             cout << "|----------------------------------------|\n";
             }
+            system("pause");
+            system("cls");
         }
         void genReports(){
             int sel;

@@ -314,19 +314,28 @@ void returnBook() {
     bool found = false;
     for (auto& book : books) {
         if (book.id == bookId && !book.available) {
-            found = true;
-            book.available = true;
-            book.borrowedby = "";
-            cout << "|==================================================|" << endl;
-            cout << "|=========== Book returned successfully ===========|" << endl;
-            cout << "|==================================================|" << endl;
-            break;
+            for (int i = 0; i < users.size(); i++)
+            {
+                if (book.borrowedby == users[i].username)
+                {
+                    found = true;
+                    book.available = true;
+                    book.borrowedby = "";
+                    cout << "|==================================================|" << endl;
+                    cout << "|=========== Book returned successfully ===========|" << endl;
+                    cout << "|==================================================|" << endl;
+                }
+            break;    
+
+            }
+            
+            
         }
     }
     if (!found) {
-        cout << "|==================================================|" << endl;
-        cout << "|======= Book not found or already returned =======|" << endl;
-        cout << "|==================================================|" << endl;
+        cout << "|===================================================================|" << endl;
+        cout << "|======= Book not found in your acccount or already returned =======|" << endl;
+        cout << "|===================================================================|" << endl;
     }
     system("pause");
     system("cls");
@@ -419,7 +428,7 @@ void addBook() {
     cin.ignore();
     getline(cin, book.author);
     cout << "| Enter Publisher Name: ";
-    cin.ignore();
+    
     getline(cin, book.publisher);
     book.available = true;
     book.dateBorrowed.day = 0;

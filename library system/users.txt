@@ -2,3 +2,11 @@ Username: user
 Password: pass
 Username: pass
 Password: word
+Username: alexia00
+Password: love
+Username: keanna
+Password: perida
+Username: keana
+Password: perida
+Username: gian
+Password: bulog
