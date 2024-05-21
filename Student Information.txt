@@ -1,0 +1,13 @@
+Last Name: Dela Cruz
+First Name: Mark Jayson
+Middle Name: Vinluan
+BirthMonth: 9
+BirthDay: 14
+BirthYear: 2005
+Sex: M
+Phone Number: 901828198
+Email: markjays@gmail.com
+Address: 721
+Course Enrolled: Bachelor of Science in Information Technology
+Student ID: 2024-SC-1
+

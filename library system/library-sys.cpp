@@ -133,8 +133,8 @@ void pullBooksFromTxt()
                 {
                     book.available = (line.substr(line.find(":") + 2) == "Yes");
                 }
-                book.borrowedby = line.substr(line.find(":") + 2);
                 getline(file, line);
+                book.borrowedby = line.substr(line.find(":") + 2);
                 getline(file, line);
                 book.dateBorrowed.day = stoi(line.substr(line.find(":") + 2));
                 getline(file, line);
@@ -283,10 +283,9 @@ void printOverdueBooks(){
     system("cls");
     cout << "|================== Overdue Books =================|" << endl;
     for (int i = 0; i < books.size(); i++){
-        if ((!books[i].available && 
-            (day - books[i].dateBorrowed.day) > 7) && ( 
-            month != books[i].dateBorrowed.month ||
-            year != books[i].dateBorrowed.year))
+        if ((!books[i].available &&
+            (day != books[i].dateBorrowed.day || 
+            (month != books[i].dateBorrowed.month || year != books[i].dateBorrowed.year))))
         {
             found = true;
             cout << "| Book Name: " << books[i].name << endl;
@@ -305,38 +304,38 @@ void printOverdueBooks(){
     system("pause");
     system("cls");
 }
-void returnBook() {
+void returnBook(string userlogged) {
     string bookId;
     system("cls");
     cout << "|================ Return a Book ===================|" << endl;
     cout << "| Enter Book ID: ";
     cin >> bookId;
     bool found = false;
-    for (auto& book : books) {
-        if (book.id == bookId && !book.available) {
-            for (int i = 0; i < users.size(); i++)
+    for (int i = 0; i < books.size(); i++) {
+        if (books[i].id == bookId && !books[i].available) {
+            for (int j = 0; j < users.size(); j++)
             {
-                if (book.borrowedby == users[i].username)
+                if (books[i].borrowedby == userlogged)
                 {
                     found = true;
-                    book.available = true;
-                    book.borrowedby = "";
+                    books[i].available = true;
+                    books[i].borrowedby = "none";
+                    books[i].dateBorrowed.day = 0;
+                    books[i].dateBorrowed.month = 0;
+                    books[i].dateBorrowed.year = 0;
                     cout << "|==================================================|" << endl;
                     cout << "|=========== Book returned successfully ===========|" << endl;
                     cout << "|==================================================|" << endl;
                 }
             break;    
-
             }
-            
-            
         }
     }
-    if (!found) {
-        cout << "|===================================================================|" << endl;
-        cout << "|======= Book not found in your acccount or already returned =======|" << endl;
-        cout << "|===================================================================|" << endl;
-    }
+        if (!found) {
+            cout << "|===================================================================|" << endl;
+            cout << "|======= Book not found in your acccount or already returned =======|" << endl;
+            cout << "|===================================================================|" << endl;
+        }
     system("pause");
     system("cls");
 }
@@ -434,6 +433,7 @@ void addBook() {
     book.dateBorrowed.day = 0;
     book.dateBorrowed.month = 0;
     book.dateBorrowed.year = 0;
+    book.borrowedby = "none";
     books.push_back(book);
     cout << "|============ Book added successfully! ============|" << endl;
     system("pause");
@@ -538,7 +538,7 @@ int main() {
                                     borrowBook(username);
                                     break;
                                 case 2:
-                                    returnBook();
+                                    returnBook(username);
                                     break;
                                 case 3:
                                     searchBook();

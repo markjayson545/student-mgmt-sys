@@ -1,0 +1,5 @@
+Student ID: 2024-SC-1
+Course: Bachelor of Science in Information Technology
+CC101: 0
+CC102: 0
+GE6: 0

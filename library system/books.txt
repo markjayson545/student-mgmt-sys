@@ -1,29 +1,49 @@
-Book Name: helluniversity
-Book ID: 666
-Author: night
-Publisher: orning
-Available: Yes
-Borrowed By: Yes
-Day Borrowed: 20
-Month Borrowed: 5
-Year Borrowed: 2024
-
-Book Name: imaginary mathematics
-Book ID: 35
-Author: apolito
-Publisher: pollo
+Book Name: to good to be true
+Book ID: 143
+Author: jesus
+Publisher: christ
 Available: No
-Borrowed By: No
-Day Borrowed: 20
+Borrowed By: gian
+Day Borrowed: 21
 Month Borrowed: 5
 Year Borrowed: 2024
 
-Book Name: tese
-Book ID: teset
-Author: teset
-Publisher: test
+Book Name: uneducation is real
+Book ID: 6969
+Author: agri
+Publisher: student of agri
 Available: Yes
-Borrowed By: Yes
+Borrowed By: none
+Day Borrowed: 0
+Month Borrowed: 0
+Year Borrowed: 0
+
+Book Name: ge3
+Book ID: 75
+Author: whamos
+Publisher: chelle
+Available: No
+Borrowed By: alexia
+Day Borrowed: 21
+Month Borrowed: 5
+Year Borrowed: 2024
+
+Book Name: test book
+Book ID: 190
+Author: test auth
+Publisher: pub test
+Available: Yes
+Borrowed By: none
+Day Borrowed: 0
+Month Borrowed: 0
+Year Borrowed: 0
+
+Book Name: ipasa mo na kami sir
+Book ID: 3
+Author: kahit dos lang
+Publisher: w3 l4b u 143
+Available: Yes
+Borrowed By: none
 Day Borrowed: 0
 Month Borrowed: 0
 Year Borrowed: 0

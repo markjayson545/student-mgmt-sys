@@ -988,7 +988,7 @@ class processing: public login{
                         printStudentInfo(studentNum - 1);
                         cout << "|----------------------------------------|\n\n";
                         cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-                        cout << "+++++++REMEMEBER YOUR STUDENT ID++++++++++\n";
+                        cout << "++++++ REMEMEBER YOUR STUDENT ID +++++++++\n";
                         cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
                     system("pause");
                     system("cls");
@@ -1832,7 +1832,7 @@ class processing: public login{
                     while ((ch = _getch()) != '\r')
                     {
                         password.push_back(ch);
-                        cout << '*';
+                        cout << '#';
                     }
                     if (username == getUsername() && password == getPassword())
                     {
@@ -2057,8 +2057,9 @@ int main()
 {
     processing process;
     // dBaseAccess/txtBaseAccess to change database type
-    dBaseAccess accessDbase;
+    txtBaseAccess accessDbase;
     login loginInfo;
+    
     accessDbase.initialize();
     string admin, pass;
     bool loop = true;
@@ -2090,7 +2091,7 @@ int main()
                 char c;
                 while ((c = _getch()) != '\r') {
                     pass.push_back(c);
-                    cout << '*';
+                    cout << '#';
                 }
                 if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
                 {
@@ -2112,7 +2113,7 @@ int main()
                 char cr;
                 while ((cr = _getch()) != '\r') {
                     pass.push_back(cr);
-                    cout << '*';
+                    cout << '#';
                 }
                 if (admin == loginInfo.getUsername() && pass == loginInfo.getPassword())
                 {
