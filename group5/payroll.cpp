@@ -10,7 +10,6 @@ using namespace std;
 
 const string MANAGER_PASSWORD = "kasyanbsit1b";
 const float EXCHANGE_RATE = 48.50;
-const float PHILHEALTH_RATE = 1000;
 const float PAY_RATE_PER_HOUR = 100.0;
 const float PAY_RATE_PER_MINUTE = PAY_RATE_PER_HOUR / 60.0;
 const float OVERTIME_RATE = PAY_RATE_PER_HOUR * 1.05;
@@ -64,7 +63,7 @@ void loadEmployeesFromFile() {
         getline(inFile, e.name);
         getline(inFile, e.phoneNumber);
         getline(inFile, e.maritalStatus);
-        getline(inFile, e.department);
+        getline(inFile, e.department);  
         getline(inFile, e.position);
         getline(inFile, e.employmentType);
         getline(inFile, e.manager);
@@ -172,10 +171,10 @@ void calculateSalary(Employee &e) {
     float overtimePay = (e.overtimeHours * OVERTIME_RATE) + (e.overtimeMinutes * OVERTIME_RATE / 60);
     float deductionPay = (e.deductionHours * DEDUCTION_RATE) + (e.deductionMinutes * DEDUCTION_RATE / 60);
 
-    e.gross = e.basic + e.ma + overtimePay - deductionPay;
+    e.gross = e.basic + e.ma + overtimePay;
     e.taxes = 0.12 * e.gross;
-    e.philhealth = PHILHEALTH_RATE;
-    e.sss = 1500;
+    e.philhealth = e.basic * 0.05; // PhilHealth calculation
+    e.sss = e.basic * 0.04; // SSS calculation
     e.net = e.gross - (e.taxes + e.philhealth + e.sss);
 }
 
@@ -198,8 +197,8 @@ void printSalary(const Employee& e) {
 
 void display(const Employee& e) {
     cout << e.empId << "\t" << e.name << "\t" << e.basic << "\t" << e.ma << "\t"
-         << e.pf << "\t" << e.insurance << "\t" << e.taxes << "\t"
-         << e.philhealth << "\t" << e.sss << endl;
+        << e.pf << "\t" << e.insurance << "\t" << e.taxes << "\t"
+        << e.philhealth << "\t" << e.sss << endl;
 }
 
 void recordAttendance(Employee &e, vector<AttendanceRecord> &attendanceRecords) {
@@ -318,7 +317,7 @@ int main() {
                     cout << "5) RECORD ATTENDANCE\n";
                     cout << "6) DISPLAY ATTENDANCE RECORDS\n";
                     cout << "7) DELETE AN EMPLOYEE RECORD\n";
-                    cout << "😎 DELETE AN ATTENDANCE RECORD\n";
+                    cout << "8) DELETE AN ATTENDANCE RECORD\n";
                     cout << "9) EXIT\n";
                     cout << "Enter your choice: ";
                     cin >> choice;
